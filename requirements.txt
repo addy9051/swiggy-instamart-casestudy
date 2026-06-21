@@ -33,5 +33,13 @@ tensorboard==2.20.0
 scikit-learn==1.9.0
 causalml==0.16.0
 # 06c (system dynamics + deep uncertainty): BPTK-Py + ema-workbench
+# parsimonious 0.10 is required: BPTK-Py 1.6.2 pulls an older parsimonious that calls the
+# inspect.getargspec removed in Python 3.11. The 06c BPTK cell also adds BPTK's sdcompiler dir to
+# sys.path to work around a bare `import parsers` in its XMILE compiler.
+# 
+# NOTE: To bypass pip's strict dependency resolver (which fails because BPTK-Py 1.6.2 requires parsimonious==0.8.1),
+# parsimonious is commented out below. You must install it manually afterwards:
+# pip install parsimonious==0.10.0
 BPTK-Py==1.6.2
+# parsimonious==0.10.0
 ema-workbench==2.5.3

@@ -1,4 +1,4 @@
 scenario,median_final_margin,mean_final_inv_share,median_final_share
-Margin-focused,0.05,0.9,0.2433
-Base case,0.05,0.9,0.2451
-Share-focused,0.0473,0.1,0.247
+Margin-focused,0.05,0.9,0.2487
+Base case,0.05,0.9,0.2495
+Share-focused,0.0477,0.1,0.2464

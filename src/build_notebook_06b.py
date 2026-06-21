@@ -284,6 +284,18 @@ plt.savefig(PROCESSED / "b6b_chart_cate_validation.png", bbox_inches="tight")
 plt.show()
 """)
 
+md(r"""**Interpreting the validation.** The X-Learner achieves a **Spearman rank correlation of 0.88** -
+well above the 0.6 threshold considered sufficient for targeting - and the scatter hugs the
+perfect-calibration diagonal, so the model recovers not just the *ranking* of users (who is more
+movable than whom) but also the *scale* of their treatment effects reasonably well.
+
+In a real campaign you never observe the true effects; this plot only exists because the data is
+synthetic. It proves the methodology works: given the behavioural features any CRM holds (frequency,
+recency, city, membership), the X-Learner reliably finds who is genuinely *moved* by the nudge rather
+than who would have converted anyway. The slight compression at the high end (estimates cluster near
+0.25 while true effects reach 0.35+) is the usual tree-model shrinkage at the tails, and it barely
+matters when the goal is ranking.""")
+
 code(r"""
 # --- Segment the pool into CATE quartiles: who to target first ---
 scored = target_pool.copy()
@@ -301,6 +313,23 @@ segment = scored.groupby("cate_quartile", observed=True).agg(
 segment.to_csv(PROCESSED / "b6b_cate_segments.csv")
 segment
 """)
+
+md(r"""**The ideal target profile.** The model sorts the ~137K targetable users into four uplift
+quartiles, and the gap between the bottom (Q1) and top (Q4) is sharp:
+
+| Signal | Q1 (least movable) | Q4 (most movable) | Ratio |
+|---|---|---|---|
+| Mean CATE | 10.8 pp | **22.6 pp** | 2.1x |
+| Order frequency | 3.0/mo | **5.8/mo** | 1.9x |
+| Swiggy One members | 7.2% | **43.0%** | 6.0x |
+| Metro (Tier-1) | 11.4% | **61.5%** | 5.4x |
+| Home-cuisine affinity | 22.1% | **80.5%** | 3.6x |
+
+**Swiggy One membership is the sharpest discriminator (6x)** - those users already show high engagement
+and payment comfort and cluster in metros where Instamart has dense coverage. Home-cuisine affinity (a
+grocery-intent proxy) is second. The CRM-ready takeaway: the first segment to pilot is *Swiggy One
+members in Tier-1 cities ordering >=5x/month with a home-cuisine skew* - derivable from existing data
+with no new collection.""")
 
 code(r"""
 # --- Uplift / Qini-style curve: cumulative incremental conversions vs population targeted ---
@@ -324,6 +353,65 @@ plt.show()
 top30 = ranked.iloc[:int(0.30 * len(ranked))]["cate"].sum() / ranked["cate"].sum()
 print(f"Targeting the top 30% by uplift captures ~{top30:.0%} of all incremental conversions.")
 """)
+
+md(r"""**Reading the uplift curve.** The orange curve sits above the random-targeting diagonal throughout
+- the model beats a spray-and-pray campaign - but the lift is *gradual*, not steep. The treatment
+effect is spread across a broad slice of the base rather than concentrated in a tiny elite: targeting
+the top 30% captures ~38-40% of all incremental conversions.
+
+The budget implication: this is **not** a "target the top 10% and stop" situation. The gains keep
+accruing as you go deeper, which argues for a moderately wide campaign (top 40-50% by predicted uplift)
+once the conversion rate is pinned down. There is no sharp sure-thing / persuadable / lost-cause
+segmentation here - just a smooth gradient where users get progressively more movable as frequency,
+membership, and grocery-intent rise together.""")
+
+# ---------------------------------------------------------------------------
+md(r"""### 5.1 What drives the model's targeting?
+
+The segment table above shows *correlational* profiles (Q4 users happen to be 43% Swiggy One). A
+stronger claim is *which features the model actually leans on* when it predicts uplift. The X-Learner
+estimates CATE through several internal models, so it does not expose one clean importance vector. The
+standard fix is a **surrogate model**: fit a simple, transparent regressor to predict the X-Learner's
+own CATE estimates from the features, then read *its* importances. This explains the black-box model's
+behaviour in terms the business can act on — and it should corroborate the segment story.""")
+
+code(r"""
+# Surrogate: a transparent GBM trained to reproduce the X-Learner's CATE estimates, so we can read
+# feature importances the multi-model X-Learner doesn't expose directly. (Works on either code path.)
+surrogate = GradientBoostingRegressor(n_estimators=200, max_depth=3, random_state=RNG_SEED)
+surrogate.fit(scored[FEATURES].values, scored["cate"].values)
+surr_r2 = surrogate.score(scored[FEATURES].values, scored["cate"].values)
+
+imp = pd.Series(surrogate.feature_importances_, index=FEATURES).sort_values()
+imp.to_csv(PROCESSED / "b6b_feature_importance.csv", header=["importance"])
+
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.barh(imp.index, imp.values, color=SWIGGY, edgecolor="white")
+ax.set_title(f"What the uplift model leans on to target (surrogate R² = {surr_r2:.2f})")
+ax.set_xlabel("Relative feature importance")
+plt.tight_layout()
+plt.savefig(PROCESSED / "b6b_chart_feature_importance.png", bbox_inches="tight")
+plt.show()
+
+print("Top drivers of predicted uplift:")
+print(imp.sort_values(ascending=False).head(5).round(3).to_string())
+""")
+
+md(r"""**Reading the feature importances.** With a surrogate R^2 of ~0.87 (it faithfully reproduces the
+X-Learner's CATE), the model leans on economically sensible signals: **order frequency (~0.27) and
+home-cuisine/grocery affinity (~0.23) together carry ~half the targeting weight**, then Swiggy One
+membership and metro location. A high-frequency user with a grocery skew is the single most movable
+profile - intuitive, since someone already buying meal ingredients is the natural grocery convert.
+
+A neat ML footnote: the hand-engineered features score ~zero - `high_frequency` (the order_freq>5
+binary) and `recency_segment` (binned days_since_last) are redundant once their *continuous* sources
+(`order_freq`, `days_since_last`) are present, because the gradient-boosted model extracts more from the
+raw variable than from a manual cut. On a real project you would drop them. `already_instamart` is
+exactly zero - correctly, since those users are excluded from the pool, so the feature is constant.
+
+*Honesty caveat: because the data is synthetic, this recovers the drivers we built into `true_cate`. On
+real CRM data the drivers would be genuinely discovered - but the surrogate-interpretation method is
+identical.*""")
 
 # ---------------------------------------------------------------------------
 md(r"""## 6. Monte Carlo — size the prize with honest uncertainty
@@ -380,6 +468,21 @@ plt.savefig(PROCESSED / "b6b_chart_monte_carlo.png", bbox_inches="tight")
 plt.show()
 """)
 
+md(r"""**The prize, honestly sized.**
+
+| Outcome | P10 | P50 | P90 |
+|---|---|---|---|
+| Incremental MTU | 0.2M | **0.4M** | 0.6M |
+| Incremental annual GOV | Rs.603cr | **Rs.1,314cr** | Rs.2,040cr |
+| Incremental annual revenue | Rs.117cr | **Rs.257cr** | Rs.420cr |
+
+At P50 the cross-sell adds **~0.4M MTU and ~Rs.1,314cr GOV/year** - about 4% of Instamart's annualised
+GOV. Meaningful but not transformative alone; its real strength is being *additive* and capex-light (no
+dark stores, no supply-chain change). The MTU histogram is nearly flat by design - incremental MTU
+scales linearly with a uniform conversion-rate draw, so it inherits that uniform shape; GOV is more
+bell-shaped because it also folds in AOV variation. The 3.4x P10-P90 spread is genuine uncertainty, not
+model noise - and it is dominated by one input, as the next chart shows.""")
+
 code(r"""
 # --- Tornado: which uncertain input drives the most variance in incremental GOV? ---
 corrs = {
@@ -397,6 +500,15 @@ plt.savefig(PROCESSED / "b6b_chart_tornado.png", bbox_inches="tight")
 plt.show()
 print("Conversion rate dominates -> the highest-value next step is a small real pilot to pin it down.")
 """)
+
+md(r"""**Where to focus next.** The tornado is unambiguous: **conversion rate drives essentially all the
+uncertainty** in the prize (correlation ~1.0 with incremental GOV); AOV is a minor secondary effect
+(~0.13). Take rate looks negligible *here* only because it does not enter the GOV formula - for the
+*revenue* figure it does matter, but even there conversion rate dominates.
+
+This makes the next action obvious and cheap: **run a small A/B pilot to measure conversion.** No
+further modelling of AOV or take rate would have comparable value - which is exactly what Sections 7-9
+build on.""")
 
 # ---------------------------------------------------------------------------
 md(r"""## 7. Net economics — is the prize worth the cost of winning it?
@@ -462,6 +574,23 @@ plt.tight_layout()
 plt.savefig(PROCESSED / "b6b_chart_net_economics.png", bbox_inches="tight")
 plt.show()
 """)
+
+md(r"""**Is the prize worth the cost of winning it?**
+
+| Metric | P10 | P50 | P90 |
+|---|---|---|---|
+| Acquisition cost | Rs.5.6cr | Rs.9.1cr | Rs.14.2cr |
+| Year-1 net revenue | Rs.111cr | **Rs.247cr** | Rs.408cr |
+| Revenue-to-cost ratio | 17.9x | **26.4x** | 39.4x |
+
+**100% of simulations are revenue-positive** - the break-even line never touches the distribution. The
+~26x median ratio is high but exactly what a *cross*-sell should be: Swiggy already paid to acquire
+these users into food delivery, so there is no top-of-funnel cost - only the price of a nudge. Even the
+pessimistic P10 returns ~18 rupees of first-year revenue per rupee spent.
+
+*Framing caveat: this is a revenue-to-cost (CAC-efficiency) screen, not profit ROI. Instamart's
+contribution margin is still negative, so the Rs.247cr does not drop to the bottom line - it compounds
+the density lever. Profit payback is gated on the margin recovery modelled in 06a/06c.*""")
 
 # ---------------------------------------------------------------------------
 md(r"""## 8. How deep should the campaign go?
@@ -536,6 +665,89 @@ plt.savefig(PROCESSED / "b6b_chart_targeting_depth.png", bbox_inches="tight")
 plt.show()
 """)
 
+md(r"""**How deep should the campaign go?** Two questions: how much net revenue accrues with depth
+(left), and does efficiency collapse at the bottom (right). The answer to the second is *no* - and that
+is the finding. Marginal revenue-to-cost declines only gently across all ten deciles, **31.5x in
+decile 1 down to 23.3x in decile 10** - every decile clears break-even by a wide margin.
+
+So there is **no targeting cutoff** below which the campaign stops being worth running. The right
+question is not "how deep?" but "how much budget?" - and the model's job is to ensure that budget
+reaches the most responsive users first, not to exclude the bottom. Concretely: top 30% -> ~Rs.130cr
+net, top 50% -> ~Rs.199cr, full pool -> ~Rs.325cr. The gentle gradient also means the model's ranking
+edge is real but modest: the cross-sell works broadly, not only for a narrow elite.""")
+
+# ---------------------------------------------------------------------------
+md(r"""### 8.1 The rupee value of the uplift model
+
+Sections 5–8 assume we target by predicted uplift. But what is that modelling work *worth*? The clean
+way to answer is to **hold the campaign size fixed** and compare two policies on the same budget:
+
+- **Uplift-model targeting** — contact the top 40% of users *by predicted CATE*.
+- **Random targeting** — contact a random 40% (a mass campaign with no model).
+
+Both contact the same number of users at the same cost. The only difference is *who* they reach, so
+the gap between the two revenue distributions is the pure, monetised value of the data science.""")
+
+code(r"""
+# Hold campaign SIZE fixed (40% of the eligible pool); vary only WHO is targeted.
+TARGET_FRAC = 0.40
+cate_desc = np.sort(scored["cate"].clip(lower=0).values)[::-1]
+k = int(TARGET_FRAC * len(cate_desc))
+smart_mean_cate  = cate_desc[:k].mean()     # top-40% by predicted uplift
+random_mean_cate = cate_desc.mean()         # a random 40% -> expected pool-mean uplift
+scale_v = n_targeted / len(cate_desc)
+n_contacted = k * scale_v
+
+rng_v  = np.random.default_rng(RNG_SEED + 2)
+n_sims = 10_000
+aov_v  = rng_v.uniform(630, 770, n_sims)
+take_v = rng_v.uniform(0.15, 0.25, n_sims)
+def _rev(mean_cate):
+    converts = n_contacted * mean_cate
+    return converts * ORDERS_PER_USER_PM * 12 * aov_v * take_v / 1e7
+rev_smart   = _rev(smart_mean_cate)
+rev_random  = _rev(random_mean_cate)
+uplift_pct  = smart_mean_cate / random_mean_cate - 1
+
+print(f"Campaign size held fixed at {TARGET_FRAC:.0%} of the pool = ~{n_contacted/1e6:.2f}M users")
+print(f"Avg uplift per targeted user  -> model: {smart_mean_cate:.3f}   random: {random_mean_cate:.3f}")
+print(f"Same spend, smarter targeting -> +{uplift_pct:.0%} incremental revenue from the model")
+print(f"Median incremental revenue    -> model: Rs.{np.median(rev_smart):,.0f}cr   "
+      f"random: Rs.{np.median(rev_random):,.0f}cr   "
+      f"(value of the model: Rs.{np.median(rev_smart)-np.median(rev_random):,.0f}cr/yr)")
+""")
+
+code(r"""
+fig, ax = plt.subplots(figsize=(9, 4.5))
+ax.hist(rev_random, bins=40, color="#AEB6C2", edgecolor="white", alpha=0.85, label="Random targeting (no model)")
+ax.hist(rev_smart,  bins=40, color=BLINKIT,   edgecolor="white", alpha=0.75, label="Uplift-model targeting")
+ax.axvline(np.median(rev_random), color=NAVY,    linestyle="--", linewidth=1.2,
+           label=f"Random median Rs.{np.median(rev_random):,.0f}cr")
+ax.axvline(np.median(rev_smart),  color=BLINKIT, linestyle="--", linewidth=1.4,
+           label=f"Model median Rs.{np.median(rev_smart):,.0f}cr")
+ax.set_title(f"Same campaign size, smarter targeting: +{uplift_pct:.0%} incremental revenue from the model")
+ax.set_xlabel("Incremental annual revenue (Rs. cr)"); ax.set_ylabel("Simulations")
+ax.legend()
+plt.tight_layout()
+plt.savefig(PROCESSED / "b6b_chart_model_value.png", bbox_inches="tight")
+plt.show()
+""")
+
+md(r"""**The rupee value of the data science itself.** Holding campaign size fixed (40% of the pool
+either way, identical cost), the only thing that changes is *who* gets contacted:
+
+| Policy | Avg uplift per targeted user | Median incremental revenue |
+|---|---|---|
+| Random targeting (no model) | 0.166 | Rs.140cr |
+| Uplift-model targeting | 0.211 | **Rs.178cr** |
+
+**Smart targeting delivers +27% incremental revenue (~Rs.38cr/year) for the same spend.** The two
+distributions clearly separate, so the gap is robust across the AOV/take-rate uncertainty, not one
+lucky draw. The +27% is meaningful but bounded - consistent with the gradual uplift curve: the model
+earns its keep as an efficiency multiplier, but the strategy's value comes mainly from the prize being
+capex-light and additive. The gap widens the tighter you target, tying back to the declining
+marginal-efficiency curve in Section 8.""")
+
 # ---------------------------------------------------------------------------
 md(r"""## 9. How big a pilot do we need?
 
@@ -591,21 +803,47 @@ plt.savefig(PROCESSED / "b6b_chart_pilot_sizing.png", bbox_inches="tight")
 plt.show()
 """)
 
+md(r"""**Sizing the one experiment that de-risks everything.**
+
+| Min detectable lift | Total (80% power) | Total (90% power) | % of eligible pool |
+|---|---|---|---|
+| +1pp (4%->5%) | 13,490 | 18,060 | 0.45-0.60% |
+| +2pp (4%->6%) | 3,726 | 4,988 | 0.12-0.17% |
+| **+3pp (4%->7%)** | **1,812** | **2,424** | **0.06-0.08%** |
+| +5pp (4%->9%) | 762 | 1,018 | 0.03% |
+
+Sample size scales with ~1/MDE^2, so the curve falls steeply: chasing a +1pp lift needs ~7x more users
+than a +3pp lift, for precision the decision does not need. **The recommendation is a +3pp MDE at 80%
+power: ~1,800 users - just 0.06% of the ~3M eligible pool.** A +3pp lift is also the right *decision*
+threshold: at or above it the Monte Carlo's central case is bankable; materially below it the prize
+slides toward the pessimistic tail. Recruit ~1,800 users matching the Section 5.1 profile, split 50/50
+nudge vs holdout, read out 30-day conversion after 4-6 weeks - and most of the Section 6 uncertainty
+band collapses.""")
+
 # ---------------------------------------------------------------------------
 md(r"""## 10. Verdict and honest limitations
 
-**Verdict on Strategy 2.** The uplift model cleanly recovers the *ranking* of which food-delivery
-users are most movable (Spearman 0.88 vs ground truth), and the ideal target profile is concrete and
-CRM-ready: Swiggy One members in metros, high-frequency, with a home-cuisine/grocery skew. The Monte
-Carlo sizes the gross prize at a P50 of **~0.4M incremental MTU and ~Rs.1,300cr GOV/year** (P10–P90:
-Rs.600cr–2,000cr). After acquisition cost the lever is **revenue-positive in ~100% of simulations** at
-a median **~25x first-year revenue-to-cost** ratio — eye-popping, but exactly what you expect from a
-*cross*-sell: Swiggy already owns these users, so there is no top-of-funnel acquisition cost, only the
-price of a nudge. Because every CATE decile clears break-even, campaign depth should be set by
-**budget, not by a profitability cutoff**, with the model ensuring the budget reaches the most
-responsive users first. The decisive next step is a pilot: detecting a +3pp
-lift over the 4% organic baseline at 80% power needs only a low-single-digit-percent slice of the
-eligible pool.
+**Verdict on Strategy 2.** The full pipeline holds together end to end:
+
+- **Targeting works.** The X-Learner recovers the ranking of who is movable at **Spearman 0.88** vs
+  ground truth, and a surrogate model (Section 5.1) shows it leans on the economically sensible signals
+  — **order frequency and grocery-affinity (cuisine_home) are the two dominant drivers (~50% of
+  importance combined)**, then Swiggy One membership and metro location. The CRM-ready target profile:
+  high-frequency, home-cuisine-skewed Swiggy One members in metros.
+- **The prize is real but not transformative alone.** P50 of **~0.4M incremental MTU and ~Rs.1,314cr
+  GOV/year** (P10–P90: Rs.600cr–2,000cr), ~4% of Instamart's annualised GOV.
+- **The economics are strongly positive.** Net of acquisition cost the lever is **revenue-positive in
+  ~100% of simulations**, P50 **~Rs.247cr net revenue** at a **~26x first-year revenue-to-cost** ratio
+  — eye-popping, but exactly what a *cross*-sell should be: Swiggy already owns these users, so there is
+  no top-of-funnel acquisition cost, only the price of a nudge.
+- **The model pays for itself.** At a fixed campaign size, uplift-model targeting delivers **+27%
+  incremental revenue (~Rs.38cr/yr) over a random mass campaign of identical cost** — the monetised
+  value of the data science itself.
+- **Depth is a budget question, not a targeting one.** Every CATE decile clears break-even
+  (marginal rev-to-cost 31.5x at the top, still 23.3x at the bottom), so spend as much budget as is
+  available, top-down — the model just ensures it reaches the most responsive users first.
+- **The next step is small and specific.** Detecting a +3pp lift over the 4% organic baseline at 80%
+  power needs **~1,800 users (0.06% of the eligible pool)** — a 4–6 week A/B test, not a big commitment.
 
 **Why this lever, despite not being the biggest.** Density (06c) and the inventory model (06a) are
 larger, more structural levers. Strategy 2's case is that it is the **lowest-friction, lowest-capex
@@ -674,6 +912,8 @@ md(r"""## Glossary
 | **A/B Test** | — | A randomised experiment splitting users into a treatment group (receives the nudge) and a control group (does not), then comparing conversion between them. The clean way to measure the *true* causal lift of a campaign before scaling it. Section 9 sizes the A/B test needed here. |
 | **Statistical Power** | — | The probability that an experiment detects a real effect when one genuinely exists. Convention is 80% (accept a 20% chance of missing a true effect). Higher power needs a larger sample — Section 9 shows the sample-size cost of going from 80% to 90%. |
 | **MDE** | Minimum Detectable Effect | The smallest effect size an experiment is powered to detect reliably. Smaller MDEs require dramatically larger samples (sample size scales with ~1/MDE²), so choosing the MDE is the key lever in pilot sizing — detecting a +1pp lift costs ~9× more users than a +3pp lift. |
+| **Feature Importance** | — | A ranking of how much each input feature contributes to a model's predictions. In Section 5.1 we read it from a *surrogate* model fit to the uplift estimates, confirming which behavioural signals (frequency, membership, grocery-affinity) the targeting actually leans on — a model-derived check on the correlational segment profiles. |
+| **Surrogate Model** | — | A simple, interpretable model trained to mimic a complex/black-box model's outputs, used to explain *how* the complex model behaves. We fit one to the X-Learner's CATE estimates to extract feature importances the multi-model X-Learner does not expose directly. |
 """)
 
 nb["cells"] = cells

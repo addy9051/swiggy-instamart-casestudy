@@ -337,10 +337,12 @@ class InstamartTransitionEnv(gym.Env):
         self.blinkit_inv        = BASELINE["blinkit_inventory_led"]
         self.margin_cap         = BASELINE["margin_cap"]
         self.inv_total          = BASELINE["inv_total_bps"] / 10000.0   # 60 bps -> 0.006 fraction
-        self.capex_per_5pp      = BASELINE["capex_per_5pp_cr"]
-        self.capex_per_density  = BASELINE["capex_per_density_cr"]
-        self.density_budget     = BASELINE["density_budget_cr"]
-        self.drag_k             = BASELINE["drag_k"]
+        # These four are the load-bearing ESTIMATES (no individual public source). They are
+        # config-overridable so Section 9 can stress them one at a time without touching the class.
+        self.capex_per_5pp      = self.cfg.get("capex_per_5pp",     BASELINE["capex_per_5pp_cr"])
+        self.capex_per_density  = self.cfg.get("capex_per_density", BASELINE["capex_per_density_cr"])
+        self.density_budget     = self.cfg.get("density_budget",    BASELINE["density_budget_cr"])
+        self.drag_k             = self.cfg.get("drag_k",            BASELINE["drag_k"])
 
         # Stochasticity (per-episode noise) so a rollout is a real distribution, not one trajectory.
         self.margin_noise_sd  = self.cfg.get("margin_noise_sd", 0.0015)   # ~15 bps
@@ -497,6 +499,10 @@ over 200 episodes rather than a single deterministic run.""")
 
 code(r"""
 def run_fixed_policy(action_fn, n_episodes=200):
+    '''Roll a NON-learning policy (a plain function of the observation) across many stochastic
+    episodes and return their final states + total reward. Exists to give PPO something to beat:
+    a learned policy that cannot out-perform these fixed rules has added no value, so these are the
+    yardsticks every later result is measured against.'''
     env = InstamartTransitionEnv()
     finals = []
     for _ in range(n_episodes):
@@ -511,13 +517,24 @@ def run_fixed_policy(action_fn, n_episodes=200):
         finals.append({**info, "total_reward": total_r})
     return pd.DataFrame(finals)
 
+def smart_schedule(obs):
+    '''A sensible fixed rule a human analyst would write WITHOUT any RL: push the transition at a
+    Moderate +10pp every quarter until inventory-led share reaches the ~90% Blinkit-like ceiling,
+    then Hold. This is the real credibility benchmark for PPO - the two dumb extremes (always-Hold,
+    always-Aggressive) are easy to beat, but if a two-line schedule matches the learned policy the
+    reinforcement learning was theatre. obs[1] is the (unscaled) inventory-led share.'''
+    return 2 if obs[1] < 0.90 else 0
+
 always_hold       = run_fixed_policy(lambda obs: 0)
 always_aggressive = run_fixed_policy(lambda obs: 3)
+smart_heuristic   = run_fixed_policy(smart_schedule)
 
 print("Always-Hold      :  median final margin = {:+.3f},  median total reward = {:.1f}".format(
     always_hold["margin"].median(), always_hold["total_reward"].median()))
 print("Always-Aggressive:  median final margin = {:+.3f},  median total reward = {:.1f}".format(
     always_aggressive["margin"].median(), always_aggressive["total_reward"].median()))
+print("Smart-heuristic  :  median final margin = {:+.3f},  median total reward = {:.1f}".format(
+    smart_heuristic["margin"].median(), smart_heuristic["total_reward"].median()))
 """)
 
 # ---------------------------------------------------------------------------
@@ -581,6 +598,50 @@ print("Training complete. Best model saved to", MODELS)
 """)
 
 # ---------------------------------------------------------------------------
+md(r"""### 6.1 Did it actually learn? (training curve)
+
+The single most important diagnostic for any RL run. `EvalCallback` evaluated the policy every 5,000
+steps and saved the results to `evaluations.npz`; we plot eval reward against training timesteps. A
+rising-then-plateau curve is the proof of life - it is exactly what was *missing* in the first
+(failed) calibration, where the reward sat flat from entropy collapse. The two baseline lines show the
+agent climbing past the do-nothing and smart-heuristic yardsticks.""")
+
+code(r"""
+# Learning curve straight from the EvalCallback log - proof the agent learned (and didn't collapse).
+evals = np.load(MODELS / "evaluations.npz")
+eval_timesteps = evals["timesteps"]
+eval_mean = evals["results"].mean(axis=1)
+eval_std  = evals["results"].std(axis=1)
+
+fig, ax = plt.subplots(figsize=(9, 4.5))
+ax.plot(eval_timesteps, eval_mean, color=SWIGGY, linewidth=2, marker="o", markersize=3, label="PPO eval reward")
+ax.fill_between(eval_timesteps, eval_mean - eval_std, eval_mean + eval_std,
+                color=SWIGGY, alpha=0.18, label="+/- 1 std")
+ax.axhline(always_hold["total_reward"].median(), color="grey", linestyle="--", linewidth=1.2,
+           label="Always-Hold baseline")
+ax.axhline(smart_heuristic["total_reward"].median(), color=BLINKIT, linestyle=":", linewidth=1.6,
+           label="Smart-heuristic baseline")
+ax.set_title("PPO learning curve: eval reward vs training timesteps")
+ax.set_xlabel("Training timesteps"); ax.set_ylabel("Episode reward (eval)")
+ax.legend()
+plt.tight_layout()
+plt.savefig(PROCESSED / "b6a_chart_learning_curve.png", bbox_inches="tight")
+plt.show()
+""")
+
+md(r"""**Proof it learned, and that the learning was worth it.** Eval reward climbs from ~9.6 to a stable
+plateau of **~10.2 by ~30-50k timesteps** and holds flat through 400k - textbook convergence, and
+exactly what was *missing* in the first (failed) calibration where entropy collapse pinned the reward
+flat.
+
+What it converges *above* matters more. It clears always-Hold (~7.9) by a wide margin, but beats the
+**smart hand-written heuristic (~9.8) only barely (~+0.4)** and reaches an identical final margin. The
+honest read: the intuitive front-load-then-hold rule already captures most of the value, and the RL
+refines it at the margin rather than finding something a smart analyst would miss. The wide +/-1 std
+band (~9.5-10.8) reflects the stochastic environment - the median policy is clearly above both
+baselines, but individual episodes overlap.""")
+
+# ---------------------------------------------------------------------------
 md(r"""## 7.0 Policy Evaluation & Optimal Trajectory
 
 Roll the trained policy out across 200 episodes and collect the per-quarter trajectories, so we
@@ -591,6 +652,10 @@ distribution.""")
 
 code(r"""
 def rollout(model, n_episodes=200, deterministic=True):
+    '''Run a TRAINED agent across many stochastic episodes and return every per-quarter step (state,
+    action, reward). Unlike run_fixed_policy (which keeps only final states), this keeps the full
+    trajectory so we can chart how the learned policy behaves quarter by quarter and distil it into a
+    readable rule. Reused by the Section 9 capex sweep to summarise each retrained agent.'''
     env = InstamartTransitionEnv()
     paths = []
     for ep in range(n_episodes):
@@ -613,10 +678,16 @@ ppo_total_reward = learned.groupby("episode")["reward"].sum()
 print("PPO policy       :  median final margin = {:+.3f},  median total reward = {:.1f}".format(
     ppo_final["margin"].median(), ppo_total_reward.median()))
 print()
-print("Improvement over always-Hold      : {:+.3f} margin".format(
-    ppo_final["margin"].median() - always_hold["margin"].median()))
-print("Improvement over always-Aggressive: {:+.3f} margin".format(
-    ppo_final["margin"].median() - always_aggressive["margin"].median()))
+print("Improvement over always-Hold      : {:+.3f} margin, {:+.1f} reward".format(
+    ppo_final["margin"].median() - always_hold["margin"].median(),
+    ppo_total_reward.median() - always_hold["total_reward"].median()))
+print("Improvement over always-Aggressive: {:+.3f} margin, {:+.1f} reward".format(
+    ppo_final["margin"].median() - always_aggressive["margin"].median(),
+    ppo_total_reward.median() - always_aggressive["total_reward"].median()))
+# The decisive test: does PPO beat the sensible hand-written schedule, not just the dumb extremes?
+print("Improvement over smart-heuristic  : {:+.3f} margin, {:+.1f} reward".format(
+    ppo_final["margin"].median() - smart_heuristic["margin"].median(),
+    ppo_total_reward.median() - smart_heuristic["total_reward"].median()))
 """)
 
 code(r"""
@@ -648,6 +719,15 @@ plt.savefig(PROCESSED / "b6a_chart_learned_policy_trajectories.png", bbox_inches
 plt.show()
 """)
 
+md(r"""**The business case for a paced transition.** Left: contribution margin recovers from -1.7% to
+**+5.0%** (capping at Blinkit's best mature-market EBITDA margin - the cap binds, so this is a ceiling,
+not unbounded growth), crossing zero around Q3-Q4. The IQR band is tight (~+/-0.5pp), so the strategy is
+robust to the quarterly noise, not fragile. Right: the agent ramps inventory-led share from 10% to the
+~90% ceiling over roughly the first six quarters, then stops. The implied inventory uplift is the
+disclosed ~60 bps across that swing; the remaining ~6-7pp of margin recovery comes from the density
+lever working every quarter in the background - density is the dominant driver, exactly as the diagnosis
+predicted.""")
+
 code(r"""
 # --- Plot 2: action mix by quarter (what the policy actually does over time) ---
 action_labels = {0: "Hold", 1: "Slow +5pp", 2: "Moderate +10pp", 3: "Aggressive +15pp", 4: "Retreat -5pp"}
@@ -671,6 +751,12 @@ plt.savefig(PROCESSED / "b6a_chart_action_mix.png", bbox_inches="tight")
 plt.show()
 """)
 
+md(r"""**The policy as a sentence.** The agent spends the first five quarters almost entirely on
+**Aggressive (+15pp)** pushes, takes one **Slow (+5pp)** step at Q6 to tap the 90% ceiling, then locks
+onto **Hold**. Two actions are essentially absent: *Moderate (+10pp)* (the faster Aggressive earns its
+capex cost sooner given the 60 bps payoff) and *Retreat (-5pp)* (which would both cost capex and lower
+margin - a double penalty). The heatmap below is the same signal at a glance.""")
+
 code(r"""
 # --- Plot 2b: action frequency heatmap (quarter x action -> share of episodes) ---
 action_labels = {0: "Hold", 1: "Slow +5pp", 2: "Mod +10pp", 3: "Aggr +15pp", 4: "Retreat"}
@@ -684,7 +770,7 @@ heat = heat.reindex(columns=[c for c in col_order if c in heat.columns])
 fig, ax = plt.subplots(figsize=(9, 4.5))
 im = ax.imshow(heat.T.values, aspect="auto", cmap="YlOrRd", vmin=0, vmax=1)
 ax.set_xticks(range(len(heat.index)))
-ax.set_xticklabels([f"Q{q+1}" for q in heat.index])
+ax.set_xticklabels([f"Q{q}" for q in heat.index])   # quarter is already 1-indexed (post-increment in step)
 ax.set_yticks(range(len(heat.columns)))
 ax.set_yticklabels(heat.columns)
 plt.colorbar(im, ax=ax, label="Share of episodes")
@@ -699,6 +785,14 @@ plt.tight_layout()
 plt.savefig(PROCESSED / "b6a_chart_action_heatmap.png", bbox_inches="tight")
 plt.show()
 """)
+
+md(r"""**The cleanest read of the policy.** Each cell is the share of the 200 evaluation episodes choosing
+that action in that quarter (red = always, white = never). **Q1-Q6: front-load the transition
+(Aggressive, then one Slow step to hit ~90%). Q7-Q12: Hold** - the inventory model is fully transitioned
+and further pushing is costly, so the agent shifts everything to densification. It is a crisp,
+interval-based strategy, not a noisy one - which is what makes it credible to present as a
+recommendation. (The decision tree in Section 7.1 shows the late-quarter Holds are the capex-solvency
+guardrail firing as the war chest draws down.)""")
 
 code(r"""
 # --- Plot 3: quarters-to-breakeven distribution under the learned policy ---
@@ -725,6 +819,13 @@ print(f"Share of episodes reaching breakeven within 12 quarters: {reached:.1%}")
 if len(bq):
     print(f"Median quarter of breakeven (where achieved): Q{bq.median():.0f}")
 """)
+
+md(r"""**Breakeven is reliable, not a tail bet.** Under the learned policy **100% of episodes reach
+positive contribution margin within the three-year horizon**, centred on **Q4** with a small Q3 cluster
+where density noise resolves early. Compared with the density-only do-nothing path, the inventory
+transition pulls breakeven forward by about a quarter (Q4 vs Q5). The narrow spread reflects the
+calibrated, realistic quarter-to-quarter noise (not extreme uncertainty) - the single most important
+output here is that breakeven is not contingent on lucky tail outcomes.""")
 
 code(r"""
 # --- Plot 4: market share trajectory - PPO vs Always-Hold baseline ---
@@ -771,7 +872,101 @@ plt.savefig(PROCESSED / "b6a_chart_market_share_trajectory.png", bbox_inches="ti
 plt.show()
 """)
 
-md(r"""### 7.1 Plain-English Interpretation
+md(r"""**A margin lever, not a share lever.** The PPO policy barely moves market share relative to
+do-nothing - both drift only 24% -> ~25% over three years, nowhere near Blinkit's 46%, and the two lines
+are nearly indistinguishable. Share in this model is driven by the *density gap* vs Blinkit, not by the
+inventory model directly, and both policies densify similarly. The takeaway is the lower bound: the
+strategy does not *cost* share, it simply is not a share-recovery tool. Closing the competitive gap
+needs the cross-sell (06b) or density-first (06c) strategies stacked on top. The widening late-quarter
+IQR is compounding density-growth uncertainty, not instability.""")
+
+# ---------------------------------------------------------------------------
+md(r"""### 7.1 From reward to rupees, and from black box to a readable rule
+
+Two translations make the result usable by a non-RL audience:
+
+1. **Business value** - the PPO reward (~10) means nothing to a CFO. We convert the learned policy's
+   edge over doing nothing into the units that matter: cumulative contribution in Rs cr (margin gap x
+   disclosed NOV, summed over the horizon) and quarters-to-breakeven saved.
+2. **Policy distillation** - PPO's network is a black box. We fit a shallow decision tree to its
+   (state -> action) choices, so the strategy can be *read* as if/else rules and audited by a
+   stakeholder, exactly the way Notebook 06b distilled its uplift model with a surrogate.""")
+
+code(r"""
+def business_value(learned_paths, hold_paths, nov_cr):
+    '''Translate the agent's edge over the do-nothing policy into CFO units. The RL reward is an
+    abstract weighted score; a decision-maker needs rupees and quarters. Returns (a) cumulative extra
+    contribution = sum over quarters of (median margin_PPO - median margin_Hold) x quarterly NOV, and
+    (b) quarters-to-breakeven saved vs Hold. Built on the medians so it carries the same stochastic
+    framing as every other figure in the notebook.'''
+    m_ppo  = learned_paths.groupby("quarter")["margin"].median()
+    m_hold = hold_paths.groupby("quarter")["margin"].median()
+    extra_contrib_cr = float(((m_ppo - m_hold) * nov_cr).sum())
+
+    def first_positive(med):
+        pos = med[med >= 0]
+        return int(pos.index.min()) if len(pos) else None
+    be_ppo, be_hold = first_positive(m_ppo), first_positive(m_hold)
+    saved = (be_hold - be_ppo) if (be_ppo is not None and be_hold is not None) else None
+    return extra_contrib_cr, be_ppo, be_hold, saved
+
+extra_cr, be_ppo, be_hold, saved_q = business_value(learned, hold_traj, BASELINE["nov_cr"])
+print(f"Cumulative extra contribution vs do-nothing (12 quarters): Rs.{extra_cr:,.0f} cr")
+print(f"PPO reaches positive contribution margin in: Q{be_ppo}"
+      + (f"   (Always-Hold: Q{be_hold})" if be_hold else "   (Always-Hold: not within horizon)"))
+if saved_q is not None:
+    print(f"Breakeven pulled forward by: {saved_q} quarter(s)")
+""")
+
+md(r"""**The edge, in CFO units.** Translated out of reward points: the optimal policy is worth **~Rs. 302
+cr of cumulative contribution over three years** versus doing nothing, and pulls breakeven **forward one
+quarter (Q4 vs Q5)**. The *size* is the honest part - Rs. 302 cr over three years is ~0.4% of annualised
+turnover, exactly the footprint of a **secondary** lever: both policies capture the dominant density
+benefit, so this is the *incremental* value of timing the inventory transition well on top of density.
+The inventory model earns its ~60 bps and a quarter of earlier breakeven - worth doing, but the garnish,
+not the meal.""")
+
+code(r"""
+# Policy distillation: turn the black-box PPO network into an auditable if/else rule.
+from sklearn.tree import DecisionTreeClassifier, export_text
+
+def distill_policy(rollout_df, max_depth=3):
+    '''Fit a shallow decision tree to the agent's (state -> action) choices so the learned policy can
+    be READ, not just trusted. PPO's neural policy is opaque; a max-depth tree that reproduces most of
+    its decisions converts "trust the network" into a rule a stakeholder can interrogate (e.g. "when
+    capex is low and it is early, push hard"). Returns the tree, the feature order, and the tree's
+    fidelity (share of the agent's actions it reproduces).'''
+    state_cols = ["density", "pct_inv", "margin", "share", "capex", "quarter"]
+    X, y = rollout_df[state_cols].values, rollout_df["action"].values
+    tree = DecisionTreeClassifier(max_depth=max_depth, random_state=RNG_SEED)
+    tree.fit(X, y)
+    return tree, state_cols, tree.score(X, y)
+
+action_names = ["Hold", "Slow +5pp", "Moderate +10pp", "Aggressive +15pp", "Retreat -5pp"]
+policy_tree, state_cols, fidelity = distill_policy(learned)
+print(f"Decision-tree fidelity (agreement with the PPO policy): {fidelity:.1%}")
+print()
+print(export_text(policy_tree, feature_names=state_cols,
+                  class_names=[action_names[c] for c in policy_tree.classes_]))
+""")
+
+md(r"""**The black box is three lines.** The decision tree reproduces the PPO policy at **100% fidelity** -
+the entire network reduces, with zero loss, to:
+
+```
+IF   capex <= ~Rs. 1,341 cr  ->  Hold              (war chest low: conserve)
+ELIF quarter <= 5            ->  Aggressive +15pp   (early & solvent: front-load)
+ELSE                         ->  Slow +5pp          (later: ease toward the 90% ceiling)
+```
+
+Two logics are visible: a **time schedule** (Aggressive early, taper to Slow) and a **solvency
+guardrail** (Hold once the war chest falls below ~30% of its initial Rs. 4,475 cr). The guardrail is
+precisely what PPO adds over the fixed heuristic - which pushes blindly regardless of the war chest -
+and it is the source of the small reward edge and earlier breakeven. The portfolio point: the value of
+the RL here is independent *validation* of the intuitive strategy plus a capex-aware brake, and because
+it distils to three rules you can defend it without ever saying "trust the neural network".""")
+
+md(r"""### 7.2 Plain-English Interpretation
 
 Translate the charts above into the one or two sentences you would say to a hiring manager.
 Because training and the environment are both stochastic, describe the *pattern* rather than exact numbers:
@@ -849,37 +1044,174 @@ plt.show()
 """)
 
 # ---------------------------------------------------------------------------
-md(r"""## 9.0 Results & Honest Limitations
+md(r"""## 9.0 Sensitivity on the Capex Estimates (the load-bearing assumptions)
 
-**Verdict on Strategy 1:** within a simulation now calibrated to disclosed aggregates, an RL agent
-consistently prefers a *paced*, front-loaded inventory-model transition over doing nothing - paced
-because an all-out push (+15 pp every quarter) drains the war chest and triggers insolvency before
-the payoff lands, so the agent settles on a moderate cadence. The bulk of the margin recovery comes
-from **density**, with the inventory model adding the disclosed ~60 bps on top. That is the *quantitative* echo of the case-study's diagnosis:
-density/maturity is the dominant lever and the inventory model is a real but secondary one. The
-preference is reasonably stable across reward weightings (Section 8).
+Section 8 stressed the reward *weights*. But the notebook's own #1 limitation is that the **capex
+parameters** are the real estimates with no individual public source - the transition cost
+(`capex_per_5pp`), the cost of buying density (`capex_per_density`), the quarterly densification budget
+(`density_budget`), and the competitive-drag strength (`drag_k`) - and they jointly govern the central
+budget tradeoff. Here we stress them *directly*: retrain the agent with each parameter set to a low and
+a high value (one at a time) and record how the optimal end-state inventory-led share, final margin,
+and breakeven quarter move. A policy that barely moves is robust to the assumption; one that swings is
+a flag for where real data would most change the recommendation.
+
+> **Runtime note:** this cell retrains the agent **9 times** at a lighter 150k-step budget (as in
+> Section 8). It is the slowest cell in the notebook - expect a few minutes on CPU.""")
+
+code(r"""
+def train_and_summarise(cfg, timesteps=150_000):
+    '''Train a fresh PPO agent under a single capex-parameter override and summarise the policy it
+    converges to. The engine of the Section 9 sweep: each call answers "if this one estimate were
+    different, would the recommended transition pace change?" Kept at the lighter 150k budget (as in
+    Section 8) because we need the policy's DIRECTION across many scenarios, not one polished agent.'''
+    e = InstamartTransitionEnv(config=cfg)
+    m = PPO("MlpPolicy", e, learning_rate=3e-4, n_steps=1024, batch_size=64, n_epochs=10,
+            gamma=0.97, ent_coef=0.01, seed=RNG_SEED, verbose=0, device=device)
+    m.learn(total_timesteps=timesteps)
+    roll = rollout(m, n_episodes=100)
+    fin = roll.sort_values("quarter").groupby("episode").tail(1)
+    bq = roll[roll["margin"] >= 0].groupby("episode")["quarter"].min()
+    del m
+    gc.collect()
+    if device == "cuda":
+        torch.cuda.empty_cache()
+    return fin["pct_inv"].mean(), fin["margin"].median(), (float(bq.median()) if len(bq) else np.nan)
+
+# Low/high bracket for each estimate (kept near the values flagged inline in Section 2).
+capex_grid = {
+    "capex_per_5pp":     (40.0, 120.0),   # Rs cr per 5pp transition step
+    "capex_per_density": (2.5, 5.0),      # Rs cr per order/store/day (cf. 06c's Rs 2.5-5cr/store)
+    "density_budget":    (200.0, 400.0),  # Rs cr deployable to densification per quarter
+    "drag_k":            (0.0, 0.006),    # competitive-drag strength
+}
+
+base_inv, base_margin, base_bq = train_and_summarise({})
+cap_rows = [dict(scenario="Base case", param="(baseline)", level="-",
+                 mean_final_inv_share=round(base_inv, 3),
+                 median_final_margin=round(base_margin, 4), median_breakeven_q=base_bq)]
+for param, (lo, hi) in capex_grid.items():
+    for level, val in [("low", lo), ("high", hi)]:
+        inv, mar, bq_ = train_and_summarise({param: val})
+        cap_rows.append(dict(scenario=f"{param}={val:g}", param=param, level=level,
+                             mean_final_inv_share=round(inv, 3),
+                             median_final_margin=round(mar, 4), median_breakeven_q=bq_))
+capex_sensitivity = pd.DataFrame(cap_rows)
+capex_sensitivity.to_csv(PROCESSED / "b6a_capex_sensitivity.csv", index=False)
+capex_sensitivity
+""")
+
+code(r"""
+# Tornado: how far does each estimate swing the optimal end-state inventory-led share (low vs high)?
+piv = (capex_sensitivity[capex_sensitivity["param"] != "(baseline)"]
+       .pivot_table(index="param", columns="level", values="mean_final_inv_share"))
+piv["swing"] = (piv["high"] - piv["low"]).abs()
+piv = piv.sort_values("swing")
+
+fig, ax = plt.subplots(figsize=(8, 3.6))
+ax.barh(piv.index, piv["swing"] * 100, color=SWIGGY, edgecolor="white")
+ax.set_xlabel("Swing in optimal final inventory-led share (pp, low vs high)")
+ax.set_title("Which capex estimate most changes the recommended transition pace?")
+ax.axvline(base_inv * 100 * 0, color=NAVY, linewidth=0.8)  # x=0 reference
+for i, (idx, row) in enumerate(piv.iterrows()):
+    ax.text(row["swing"] * 100, i, f" {row['swing']*100:.0f}pp", va="center", fontsize=9)
+plt.tight_layout()
+plt.savefig(PROCESSED / "b6a_chart_capex_tornado.png", bbox_inches="tight")
+plt.show()
+print("A small swing = the recommendation is robust to that estimate; a large swing = source it first.")
+""")
+
+md(r"""**The headline recommendation is not uniformly robust - and that is the point.** The tornado ranks
+how far each estimate swings the *optimal* transition pace: **capex_per_density (80pp) ~ capex_per_5pp
+(78pp) >> density_budget (33pp) >> drag_k (0pp)**. The agent's decision is essentially **binary** - it
+either transitions fully (~0.90) or not at all (~0.10), flipping on whether the inventory lever's cost
+clears its 60 bps benefit: a dear transition (Rs 120 cr/5pp), cheap-to-buy density elsewhere
+(Rs 5 cr/order/day), or a large densification budget (Rs 400 cr/qtr) each make it abandon the transition
+and pour capex into density instead.
+
+But the margin and breakeven outcomes (see the CSV) barely move - ~+5% margin, ~Q4 breakeven, *every*
+scenario. **The outcome is robust; the transition decision is contingent.** Density carries the margin
+recovery no matter what; whether to *also* transition the inventory model hinges entirely on its cost,
+which is why it is the first parameter a real engagement must price. That drag_k swings the answer by
+0pp also tells you competitive drag is immaterial to this decision.""")
+
+# ---------------------------------------------------------------------------
+md(r"""## 10.0 Results & Honest Limitations
+
+**Verdict on Strategy 1.** Across every cell of this run - baselines, learning curve, policy
+evaluation, business translation, policy distillation, and two independent sensitivity sweeps - a
+consistent and honest picture emerges: the inventory-model transition is a *real but secondary,
+cost-contingent* lever, and **density is the robust driver that delivers the margin outcome no matter
+what**. The reinforcement learning's job turned out to be less "discover a non-obvious strategy" and
+more "validate the intuitive one, quantify its modest edge, and make it auditable."
+
+**What the agent learned (Section 7 trajectories, action mix, heatmap, decision tree all agree).**
+The optimal policy is a clean, three-phase rule: **push Aggressive (+15pp) for the first five quarters,
+take one Slow (+5pp) step at Q6 to tap the ~90% Blinkit-like ceiling, then Hold for the rest.** It is
+*not* a complicated control signal - a depth-3 decision tree reproduces it at **100% fidelity**:
+*Hold if the war chest falls below ~Rs. 1,341 cr; else Aggressive while early (Q <= 5); else Slow.*
+
+**What it achieves (Section 7 margin trajectory, breakeven distribution, business value).**
+Contribution margin climbs from -1.7% to **+5.0%** (where it caps at Blinkit's best mature-market
+EBITDA margin - the cap binds, so this is a ceiling, not unbounded growth), crossing zero at
+**breakeven Q4 in 100% of episodes**. Translated to cash, the policy is worth **~Rs. 302 cr of
+cumulative contribution over three years** versus doing nothing and pulls breakeven **forward one
+quarter (Q4 vs Q5)**. At ~0.4% of annualised turnover, that is precisely the footprint of a secondary
+lever - both policies capture the dominant density benefit; the inventory model only adds its disclosed
+~60 bps on top.
+
+**How it compares (Section 5.1 baselines, Section 6.1 learning curve, Section 7 improvements).**
+The agent converges to ~10.2 eval reward and clears the always-Hold floor (7.9) decisively and the
+always-Aggressive policy (2.4 - it goes insolvent) overwhelmingly. But against a *smart hand-written
+heuristic* (9.8) it wins only barely: **+0.4 reward and +0.000 margin** - it reaches an identical
++5.0% final margin. The RL discovers no better destination than a sensible analyst would; its sole
+genuine addition is the **capex-aware solvency brake** (the "Hold if capex low" rule) that a static
+schedule lacks. That is the source of its small reward edge and earlier breakeven.
+
+**What it does *not* do (Section 7 market-share trajectory).**
+Market share is essentially unmoved - both PPO and do-nothing drift only 24% -> ~25% over three years,
+nowhere near Blinkit's 46%, and the two lines are nearly indistinguishable. **The inventory transition
+is a margin lever, not a share lever.** Recovering competitive position needs the cross-sell (06b) and
+density (06c) strategies, not this one.
+
+**Robustness - the outcome is solid, the transition *decision* is contingent, and two stress tests
+agree (Section 8 reward weights, Section 9 capex).**
+Final margin (~+5.0%) and breakeven (~Q4) hold across *every* scenario in both sweeps - density carries
+the result regardless. But the optimal inventory-led share flips **bimodally** between *fully transition*
+(0.90) and *don't bother* (0.10):
+- **Section 8:** under share-focused reward weighting it flips to 0.10 (the agent pours capex into
+  density instead); under margin-focused and base-case weightings it transitions fully (0.90).
+- **Section 9:** it flips to 0.10 if the transition is dear (Rs 120 cr/5pp), if density is expensive to
+  buy (Rs 5 cr/order/day), or if the densification budget is large (Rs 400 cr/qtr) - swings of 78pp,
+  80pp, and 33pp respectively. Competitive drag is immaterial (0pp).
+
+So the transition is worth doing only if you both **(a) prioritise margin/capex over raw share** and
+**(b) can transition at roughly the base-case cost**. Otherwise the agent rationally skips it and lets
+density do the work - which is itself the strongest possible confirmation of the case-study thesis.
 
 **Limitations (the part that makes this credible rather than a toy):**
 
 1. **The capex parameters are estimates.** `capex_per_5pp_cr` (Rs 80 cr/5pp), `capex_per_density_cr`
    (Rs 4 cr per order/store/day), and `density_budget_cr` (Rs 300 cr/quarter) have no individual
-   public source. They jointly govern the central tradeoff, so the policy could shift if they are
-   very different. A real engagement would source them from Swiggy's capex disclosures and stress
-   them the way Section 8 stresses the reward weights.
-2. **The density -> margin slope is regressed from the n=1,143 *simulated* store network
-   (Notebook 02), not real stores,** and is applied to the *network-average* density (an ecological
-   approximation). The disclosed -1.8% margin anchors the level; the sim supplies only the slope.
-3. **The 75% shareholder-vote gate is treated as already resolved.** Modelling the governance
-   approval itself would need a separate meta-layer; here we answer *"given approval, how fast?"*
-4. **Real inventory transitions involve supplier contracts, warehouse build-out, and cold-chain
-   logistics** - none of which are in this model. The environment abstracts all of that into a
-   single capex cost and a single war chest.
+   public source - and Section 9 shows they are *decisive*: a ~50% swing flips the recommendation. A
+   real engagement would replace the low/high brackets with values sourced from Swiggy's capex disclosures.
+2. **The density -> margin slope is regressed from the n=1,143 *simulated* store network (Notebook 02),
+   not real stores,** and is applied to network-average density (an ecological approximation). The
+   disclosed -1.8% margin anchors the level; the sim supplies only the slope.
+3. **The +5.0% margin is a ceiling, not a forecast** - it is the disclosed Blinkit Gurgaon/Noida mature
+   margin used as a cap, which binds by Q12. The model says "reaches best-in-class mature economics,"
+   not "margin grows without limit."
+4. **Market-share dynamics are weak by construction** - share barely responds to density over this
+   horizon, so the share-related conclusions are directional only.
+5. **The 75% shareholder-vote gate is treated as already resolved**, and **real transitions involve
+   supplier contracts, warehouse build-out, and cold-chain logistics** abstracted here into a single
+   capex cost and war chest.
 
-The one-line framing for a recruiter: *"I used reinforcement learning to find the optimal pace for
-the inventory-model transition inside a simulation calibrated to the disclosed 60 bps inventory
-benefit and a density-margin slope regressed from my own store-level model, then stress-tested the
-result against its reward assumptions and was explicit about the capex estimates that drive the
-tradeoff."*""")
+The one-line framing for a recruiter: *"I framed the inventory-model transition as a budget-constrained
+MDP and trained a PPO agent to pace it; it beat both naive baselines and a smart hand-written rule,
+reached +5% contribution margin and Q4 breakeven worth ~Rs. 302 cr of cumulative contribution,
+distilled to an auditable three-rule policy with a capex-aware safety brake, and - across reward-weight
+and capex stress tests - showed the margin outcome is robust while the decision to transition at all is
+contingent on priorities and capex estimates I'd source before committing."*""")
 
 nb["cells"] = cells
 nb["metadata"] = {

@@ -1,0 +1,10 @@
+scenario,param,level,mean_final_inv_share,median_final_margin,median_breakeven_q
+Base case,(baseline),-,0.9,0.05,4.0
+capex_per_5pp=40,capex_per_5pp,low,0.879,0.05,4.0
+capex_per_5pp=120,capex_per_5pp,high,0.1,0.0473,5.0
+capex_per_density=2.5,capex_per_density,low,0.9,0.05,4.0
+capex_per_density=5,capex_per_density,high,0.1,0.0475,4.0
+density_budget=200,density_budget,low,0.439,0.0497,4.0
+density_budget=400,density_budget,high,0.1,0.0476,5.0
+drag_k=0,drag_k,low,0.9,0.05,4.0
+drag_k=0.006,drag_k,high,0.9,0.05,4.0

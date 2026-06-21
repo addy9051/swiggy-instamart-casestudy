@@ -1,0 +1,86 @@
+row_id,company,segment,period,period_type,metric,value,unit,yoy_pct,qoq_pct,confidence,source_id,notes
+1,Swiggy Instamart,Quick Commerce,Q4FY25,quarterly,GOV,4670.0,INR_crore,,,disclosed,S06,
+2,Swiggy Instamart,Quick Commerce,Q3FY26,quarterly,GOV,7938.0,INR_crore,,,disclosed,S06,Implied by reported sequential dip to 7881 in Q4FY26 (first-ever sequential GOV decline)
+3,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,GOV,7881.0,INR_crore,68.8,-0.7,disclosed,"S06,S04",
+4,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,NOV,5675.0,INR_crore,60.3,4.0,disclosed,"S03,S04",
+5,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Contribution Margin,-1.8,percent,,,disclosed,"S03,S04",Improved 65 bps sequentially from Q3FY26; basis (GOV vs NOV) not explicit in secondary coverage — verify in KPI databook
+6,Swiggy Instamart,Quick Commerce,Mar2026,monthly,Contribution Margin,-1.1,percent,,,disclosed,"S03,S04",
+7,Swiggy Instamart,Quick Commerce,Q3FY26,quarterly,Contribution Margin,-2.45,percent,,,derived,,Back-calculated: Q4FY26 value (-1.8%) minus the stated +65bps sequential improvement
+8,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Adjusted EBITDA,-858.0,INR_crore,,,disclosed,S07,
+9,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Adjusted EBITDA Margin,-10.9,percent,,,disclosed,S03,
+10,Swiggy Instamart,Quick Commerce,Q3FY26,quarterly,Adjusted EBITDA Margin,-11.4,percent,,,disclosed,S03,
+11,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,AOV,700.0,INR,32.8,,disclosed,"S03,S04,S06",
+12,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Dark Stores (count),1143.0,count,,,disclosed,"S03,S04",
+13,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Net Dark Store Adds,7.0,count,,,disclosed,S04,
+14,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Cities Covered,129.0,count,,,disclosed,S04,
+15,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Warehousing Area,4.8,million_sqft,21.1,,disclosed,S04,
+16,Swiggy Instamart,Quick Commerce,Q2FY26,quarterly,Orders per Store per Day,1025.0,orders,,4.0,disclosed,S01,
+17,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,MTU,13.3,million,,,analyst_estimate,,Cited in competitive-context analysis; cross-check against Swiggy's own MTU disclosure (Swiggy reports a consolidated/food-delivery MTU figure more prominently)
+18,Swiggy Instamart,Quick Commerce,Q2FY26,quarterly,Store Profitability Share,25.0,percent_of_stores,,,disclosed,S01,
+19,Swiggy Instamart,Quick Commerce,Q4FY25,quarterly,Store Profitability Share,10.0,percent_of_stores,,,analyst_estimate,,"Described only as '<10%, two quarters before Q2FY26' — treat as approximate"
+20,Swiggy Instamart,Quick Commerce,FY26,annual,Per Order Loss,85.18,INR,,,analyst_estimate,"S21,S22",
+21,Swiggy Instamart,Quick Commerce,FY26,annual,Capex Allocated from QIP,4475.0,INR_crore,,,disclosed,,"Earmarked for Instamart fulfillment infrastructure out of the broader ₹10,000cr QIP raise"
+22,Swiggy Food Delivery,Food Delivery,Q1FY26,quarterly,Adjusted EBITDA Margin,2.4,percent,,,derived,,Referenced as 'last quarter' in the Q2FY26 letter
+23,Swiggy Food Delivery,Food Delivery,Q2FY26,quarterly,Adjusted EBITDA Margin,2.8,percent,,,disclosed,S01,+44 bps QoQ per shareholder letter
+24,Swiggy Food Delivery,Food Delivery,Q3FY26,quarterly,Adjusted EBITDA Margin,3.04,percent,,,derived,,Back-calculated: Q4FY26 (3.3%) minus the stated +26bps QoQ improvement
+25,Swiggy Food Delivery,Food Delivery,Q4FY26,quarterly,Adjusted EBITDA Margin,3.3,percent,,,disclosed,"S03,S05","+41bps YoY, +26bps QoQ per disclosure"
+26,Swiggy Food Delivery,Food Delivery,Q4FY26,quarterly,Adjusted EBITDA,297.0,INR_crore,40.0,,disclosed,"S03,S05",
+27,Swiggy Food Delivery,Food Delivery,Q4FY26,quarterly,GOV,9005.0,INR_crore,22.6,,disclosed,"S03,S05",
+28,Swiggy Food Delivery,Food Delivery,Q2FY26,quarterly,GOV,,INR_crore,18.8,,disclosed,S01,Absolute value not captured in source — YoY% only
+29,Swiggy Food Delivery,Food Delivery,Q2FY26,quarterly,Take Rate,25.8,percent,,,disclosed,S01,+10bps QoQ
+30,Swiggy Food Delivery,Food Delivery,Q1FY26,quarterly,Take Rate,25.7,percent,,,derived,,
+31,Swiggy Food Delivery,Food Delivery,Q2FY26,quarterly,Contribution Margin,7.3,percent,,,disclosed,S01,Range-bound QoQ
+32,Swiggy Food Delivery,Food Delivery,Q4FY26,quarterly,MTU,18.3,million,21.0,,disclosed,S05,
+33,Swiggy OOH,Out-of-Home Consumption,Q4FY26,quarterly,GOV,,INR_crore,43.0,,disclosed,,Absolute value not captured in source — YoY% only
+34,Swiggy OOH,Out-of-Home Consumption,FY26,annual,Full Year Profitability Achieved,1.0,boolean,,,disclosed,,
+35,Swiggy Consolidated,Consolidated,Q3FY25,quarterly,Net Loss,799.0,INR_crore,,,disclosed,S03,
+36,Swiggy Consolidated,Consolidated,Q3FY26,quarterly,Net Loss,1065.0,INR_crore,,,disclosed,"S03,S08",
+37,Swiggy Consolidated,Consolidated,Q3FY25,quarterly,Revenue from Operations,3993.0,INR_crore,,,disclosed,S03,
+38,Swiggy Consolidated,Consolidated,Q3FY26,quarterly,Revenue from Operations,6148.0,INR_crore,,,disclosed,S03,
+39,Swiggy Consolidated,Consolidated,Q4FY25,quarterly,Net Loss,1081.0,INR_crore,,,disclosed,S08,
+40,Swiggy Consolidated,Consolidated,Q4FY26,quarterly,Net Loss,800.0,INR_crore,-25.99,-24.88,disclosed,"S08,S09,S10",
+41,Swiggy Consolidated,Consolidated,FY25,annual,Net Loss,3117.0,INR_crore,,,disclosed,S04,
+42,Swiggy Consolidated,Consolidated,FY26,annual,Net Loss,4154.0,INR_crore,,,disclosed,S04,
+43,Swiggy Consolidated,Consolidated,Q4FY26,quarterly,Revenue from Operations,6383.0,INR_crore,44.74,3.82,disclosed,"S08,S09,S10",
+44,Swiggy Consolidated,Consolidated,8May2026,snapshot,Stock Price,280.8,INR,,,disclosed,S08,
+45,Swiggy Consolidated,Consolidated,8May2026,snapshot,Stock Price YTD Change,-27.29,percent,,,disclosed,S08,
+46,Swiggy Consolidated,Consolidated,8May2026,snapshot,Stock Price vs 52wk High,-40.63,percent,,,disclosed,S08,
+47,Swiggy Consolidated,Consolidated,Q2FY26,quarterly,Cash Position,2.0,USD_billion,,,analyst_estimate,S11,
+48,Swiggy Consolidated,Consolidated,post-QIP,snapshot,Cash Position,17000.0,INR_crore,,,disclosed,,"Approximate, post the ₹10,000cr QIP raise"
+49,Swiggy Consolidated,Consolidated,QIP-event,snapshot,QIP Amount Raised,10000.0,INR_crore,,,disclosed,,
+50,Swiggy Consolidated,Consolidated,QIP-event,snapshot,QIP Shares Issued,26.67,crore_shares,,,disclosed,,
+51,Swiggy Consolidated,Consolidated,QIP-event,snapshot,QIP Price per Share,375.0,INR,,,disclosed,,
+52,Blinkit,Quick Commerce,Q4FY25,quarterly,GOV,9421.0,INR_crore,134.0,,disclosed,"S13,S14",
+53,Blinkit,Quick Commerce,Q4FY26,quarterly,NOV,14386.0,INR_crore,95.4,,disclosed,"S13,S14,S15",
+54,Blinkit,Quick Commerce,Q4FY26,quarterly,Adjusted EBITDA,37.0,INR_crore,,,disclosed,"S13,S14",First quarter of positive adjusted EBITDA
+55,Blinkit,Quick Commerce,Q4FY26,quarterly,Dark Stores (count),2243.0,count,,,disclosed,S15,
+56,Blinkit,Quick Commerce,Q4FY26,quarterly,Net Dark Store Adds,216.0,count,,,disclosed,S15,
+57,Blinkit,Quick Commerce,FY23,annual,Adjusted EBITDA Margin,-17.8,percent,,,disclosed,"S14,S15",
+58,Blinkit,Quick Commerce,FY24,annual,Adjusted EBITDA Margin,-3.7,percent,,,disclosed,"S14,S15",
+59,Blinkit,Quick Commerce,FY25,annual,Adjusted EBITDA Margin,-1.3,percent,,,disclosed,"S14,S15",
+60,Blinkit,Quick Commerce,FY26,annual,Adjusted EBITDA Margin,-0.6,percent,,,disclosed,"S14,S15",
+61,Blinkit,Quick Commerce,Q4FY26,quarterly,Adjusted EBITDA Margin,0.3,percent,,,disclosed,"S13,S14",
+62,Blinkit,Quick Commerce,current,snapshot,AOV,525.0,INR,,,disclosed,S15,Disclosed as 'Net AOV' by Eternal — relabeled to 'AOV' here for cross-company consistency with Swiggy/Zepto rows
+63,Blinkit,Quick Commerce,Q4FY25,quarterly,Delivery Cost per Order,55.0,INR,-14.0,,disclosed,S15,
+64,Blinkit,Quick Commerce,FY26,annual,Per Order Loss,3.02,INR,,,analyst_estimate,"S21,S22",
+65,Blinkit,Quick Commerce,Q3FY26,quarterly,Inventory-led NOV Share,90.0,percent,,,disclosed,S15,
+66,Blinkit,Quick Commerce,Jan2026,snapshot,Market Share,46.0,percent,,,analyst_estimate,S23,
+67,Blinkit,Quick Commerce,FY26,annual,Revenue from Operations,37779.0,INR_crore,,,disclosed,S14,Inventory-led model inflates this vs marketplace-model peers — NOT comparable to Swiggy/Zepto revenue without adjustment
+68,Blinkit,Quick Commerce,current,snapshot,Mature Market EBITDA Margin (Delhi NCR aggregate),3.5,percent,,,disclosed,S15,
+69,Blinkit,Quick Commerce,current,snapshot,Mature Market EBITDA Margin (Gurgaon/Noida),5.0,percent,,,disclosed,S15,
+70,Blinkit,Quick Commerce,current,snapshot,Orders per Store per Day,1337.0,orders,,,derived,S20,Derived from Nomura's relative framing: Zepto (~2140) is ~60% higher than Blinkit => Blinkit ≈ 2140/1.6
+71,Zepto,Quick Commerce,FY25,annual,Revenue,11110.0,INR_crore,,,disclosed,S19,
+72,Zepto,Quick Commerce,Jan2026,snapshot,Market Share,22.0,percent,,,analyst_estimate,S23,
+73,Zepto,Quick Commerce,Q4FY26,quarterly,NRV,8134.0,INR_crore,73.0,28.0,disclosed,S19,
+74,Zepto,Quick Commerce,Q4FY26,quarterly,Orders,210.0,million,,,disclosed,S19,
+75,Zepto,Quick Commerce,FY26,annual,Orders (Full Year),640.0,million,,,disclosed,S19,
+76,Zepto,Quick Commerce,FY25,annual,Orders (Full Year),332.0,million,,,disclosed,S19,
+77,Zepto,Quick Commerce,current,snapshot,AOV,387.0,INR,,,disclosed,S19,
+78,Zepto,Quick Commerce,current,snapshot,Orders per Store per Day,2140.0,orders,,,analyst_estimate,S20,
+79,Zepto,Quick Commerce,FY26,annual,Per Order Loss,78.75,INR,,,analyst_estimate,"S21,S22",
+80,Zepto,Quick Commerce,FY26,annual,Advertising Revenue,1636.0,INR_crore,,,disclosed,S19,~7.9% of NRV
+81,Top3 Aggregate,Market Structure,FY24,annual,Instamart Order Share (of Top 3),34.3,percent,,,disclosed,S19,
+82,Top3 Aggregate,Market Structure,FY25,annual,Instamart Order Share (of Top 3),24.5,percent,,,disclosed,S19,
+83,Top3 Aggregate,Market Structure,FY26,annual,Instamart Order Share (of Top 3),20.9,percent,,,disclosed,S19,
+84,Swiggy Consolidated,Governance,current,snapshot,IOCC Resolution Vote Share,72.35,percent,,,disclosed,,"Required 75% threshold to pass — resolution failed by 2.65pp, blocking the inventory-model transition"
+85,Swiggy Consolidated,Governance,current,snapshot,Inventory Model Margin Benefit (stated),60.0,bps,,,disclosed,,CFO-stated range was 50-70bps; midpoint used as a single point estimate

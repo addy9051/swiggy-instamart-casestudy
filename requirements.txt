@@ -1,0 +1,32 @@
+# Swiggy Instamart case study — dependencies
+# Versions pinned to exactly what was used to build and execute all 5 notebooks
+# (01_master_data through 05_logistics_cost_benchmarking) with zero errors.
+# Install with: pip install -r requirements.txt
+
+# --- Analysis libraries used inside the notebook code ---
+pandas==3.0.2
+numpy==2.4.4
+matplotlib==3.10.8
+scipy==1.17.1
+
+# --- Jupyter tooling needed to open and run the notebooks ---
+jupyterlab==4.5.8
+notebook==7.5.7
+ipykernel==7.3.0
+jupyter==1.1.1
+jupyter_client==8.9.1
+jupyter_core==5.9.1
+
+# --- Needed only if you regenerate notebooks via build_notebook*.py
+#     or re-execute them headlessly via `jupyter nbconvert --execute` ---
+nbformat==5.10.4
+nbconvert==7.17.1
+
+# --- Additional ML & simulation libraries requested ---
+gymnasium
+stable-baselines3[extra]
+scikit-learn
+causalml
+BPTK-Py
+ema-workbench
+tensorboard

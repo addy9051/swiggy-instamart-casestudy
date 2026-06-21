@@ -84,3 +84,4 @@ row_id,company,segment,period,period_type,metric,value,unit,yoy_pct,qoq_pct,conf
 83,Top3 Aggregate,Market Structure,FY26,annual,Instamart Order Share (of Top 3),20.9,percent,,,disclosed,S19,
 84,Swiggy Consolidated,Governance,current,snapshot,IOCC Resolution Vote Share,72.35,percent,,,disclosed,,"Required 75% threshold to pass — resolution failed by 2.65pp, blocking the inventory-model transition"
 85,Swiggy Consolidated,Governance,current,snapshot,Inventory Model Margin Benefit (stated),60.0,bps,,,disclosed,,CFO-stated range was 50-70bps; midpoint used as a single point estimate
+86,Swiggy Instamart,Quick Commerce,Jan2026,snapshot,Market Share,24.0,percent,,,analyst_estimate,S23,"Datum Intelligence / Reuters Jan 2026 snapshot (Blinkit 46%, Instamart 24%, Zepto 22%, Others 8%); previously hard-coded in notebook 06a, now a traceable row"

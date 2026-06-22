@@ -24,14 +24,16 @@ Root causes and fixes:
   * Maturation was far too slow (effective ~25-quarter time constant). FIX: effective rate
     = maturation_base / maturation_qtr, calibrated so density can cross the breakeven within
     the horizon for the hold strategy.
-  * margin_slope is anchored so margin = init_margin (-1.8%) at today's 1,025 density and
-    crosses 0 exactly at Notebook 02's 1,552 breakeven; it is capped at Blinkit's mature
-    +5%. The slope is swept 2e-5..8e-5, a range that also brackets 06a's regressed ~7.9e-5.
+  * margin_slope is anchored so margin = init_margin (-1.8%) at today's 1,093 density (Q4 FY26)
+    and crosses 0 at a central ~1,300 breakeven (Redseer's mature-metro band is ~1,200-1,250);
+    capped at Blinkit's mature +5%. The slope is swept 3e-5..1.4e-4.
   * The success-box uses an interpretable median-split (the old greedy peel produced a
     counter-intuitive "slower maturation is better" artifact).
-Validated dynamics after the redesign: hold breaks even ~Q7, aggressive does not within
-12 quarters; the sweep reaches breakeven in ~84% of scenarios (median Q5); margin_slope and
-maturation_qtr are the dominant drivers.
+REAL-DATA UPDATE (validated against public filings): with init_density 1,093 (was 1,025, which
+was Q2 FY26), breakeven ~1,300 (was 1,552), and ~Rs.1cr stores (was Rs.3.5cr), hold breaks even
+~Q2-3 and aggressive ~Q4-5; the sweep has hold reaching breakeven in ~97% of scenarios (median
+Q3) and beating expand in ~97%, with margin_slope the dominant driver. The recommendation is
+reinforced; see the §7 verdict for what changed.
 """
 import nbformat as nbf
 
@@ -50,8 +52,9 @@ md(r"""# 06c - Strategy 3: Hold Expansion, Grow Density First
 
 **The question this notebook answers**
 
-Branch 1 found Instamart runs at **1,025 orders/store/day - only 51%** of its own stated 2,000+
-capacity ceiling - and that the simulated breakeven is around **1,552 orders/day** (Notebook 02).
+Branch 1 found Instamart runs at **1,093 orders/store/day (Q4 FY26) - only ~55%** of its own stated
+2,000+ capacity ceiling - and that the breakeven density is around **~1,300 orders/day** (Redseer's
+mature-metro band is ~1,200-1,250; cohort-dependent). So Instamart sits only ~200 orders below breakeven.
 Branch 3 found new entrants (Flipkart Minutes, Amazon Now) scaling fast. That creates a genuine
 strategic tension: keep opening stores to defend coverage, or *stop* opening stores and let the
 existing network fill up first?
@@ -72,10 +75,11 @@ to find *under what conditions* the hold strategy actually wins, rather than quo
 
 **Honesty flag up front**
 
-The stocks and flows are calibrated to disclosed figures (1,143 stores, 1,025 density, -1.8% margin)
-and to the Notebook 02 breakeven (1,552). Contribution margin is modelled as an **auxiliary level** -
-an instantaneous function of density (`margin = init_margin + slope*(density - init_density)`),
-anchored to cross 0 at the 1,552 breakeven and capped at Blinkit's mature +5%. The functional forms
+The stocks and flows are calibrated to disclosed figures (1,143 stores, 1,093 density Q4 FY26, -1.8%
+margin) and to a ~1,300 breakeven (Redseer's mature-metro band ~1,200-1,250). Contribution margin is
+modelled as an **auxiliary level** - an instantaneous function of density (`margin = init_margin +
+slope*(density - init_density)`), anchored to cross 0 at the ~1,300 breakeven and capped at Blinkit's
+mature +5%. The functional forms
 (dilution, maturation) and the structural coefficients are modelling assumptions - which is exactly
 why Section 5 sweeps them. Read the output as *"here are the conditions under which holding expansion
 reaches breakeven faster, and how sensitive that is to assumptions"* - not as a dated forecast.
@@ -117,21 +121,24 @@ def lookup(company, metric, default=None):
 SD = dict(
     # --- Initial stocks (disclosed) ---
     init_stores   = lookup("Swiggy Instamart", "Dark Stores (count)", 1143),       # D
-    init_density  = lookup("Swiggy Instamart", "Orders per Store per Day", 1025),  # D
+    init_density  = 1093.0,    # D  - Q4 FY26 (Swiggy Q4FY26 letter); the 1,025 used earlier was Q2 FY26
     init_margin   = -0.018,    # D  (Q4 FY26, as fraction)
     init_capex    = 500.0,     # E  - starting densification war chest (scaled proxy)
     # --- Structural coefficients (assumptions; swept in Section 5) ---
     density_ceiling   = 2000.0,   # D
-    breakeven_density = 1552.0,   # DV - Notebook 02; the margin slope is anchored to cross 0 here
+    breakeven_density = 1300.0,   # DV - central network estimate; Redseer puts mature-METRO breakeven at
+                                  #      ~1,200-1,250, cohort-dependent (non-metro higher). Earlier 1,552
+                                  #      overstated it and was inconsistent with the near-zero disclosed CM.
     new_store_density = 400.0,    # E  - where a freshly-opened store starts
     maturation_qtr    = 2.0,      # E  - quarters for a store to mature (SMALLER = faster)
     maturation_base   = 0.25,     # E  - base maturation rate; effective rate = base / maturation_qtr
-    # margin as a LEVEL: anchored so margin = init_margin at 1,025 and = 0 at the 1,552 breakeven
-    margin_slope      = 0.018 / (1552.0 - 1025.0),  # DV ~3.42e-5 margin-fraction per order/store/day
+    # margin as a LEVEL: anchored so margin = init_margin (-1.8%) at today's 1,093 and = 0 at ~1,300
+    margin_slope      = 0.018 / (1300.0 - 1093.0),  # DV ~8.7e-5; close to Notebook 06a's regressed ~7.9e-5
     margin_cap        = 0.05,     # D  - Blinkit Gurgaon/Noida mature EBITDA margin, used as a ceiling
-    capex_per_store   = 3.5,      # E  - Rs.cr to build one dark store
+    capex_per_store   = 1.0,      # DV - Rs.cr to build one dark store (Blinkit-implied; was 3.5, which
+                                  #      conflated inventory working capital + multi-year lease)
     regen_scale       = 10000.0,  # E  - scaled proxy: positive margin -> capex regeneration
-    blinkit_density   = lookup("Blinkit", "Orders per Store per Day", 1337),       # DV - reference only
+    blinkit_density   = lookup("Blinkit", "Orders per Store per Day", 1425),       # DV - reference only
     # --- Strategy levers ---
     aggressive_adds_qtr = 60.0,   # E  - current-pace expansion
     hold_adds_qtr       = 5.0,    # E  - maintenance only
@@ -140,7 +147,7 @@ for k, v in SD.items():
     print(f"  {k:20s} = {v}")
 print(f"\nImplied: margin_slope {SD['margin_slope']:.3e} -> margin is 0 at "
       f"{SD['init_density'] - SD['init_margin']/SD['margin_slope']:.0f} orders/store/day "
-      f"(matches the 1,552 breakeven).")
+      f"(the ~1,300 central breakeven; Instamart at 1,093 is only ~200 orders away).")
 """)
 
 # ---------------------------------------------------------------------------
@@ -256,13 +263,16 @@ print(f"Quarters to margin breakeven - aggressive: {quarters_to_breakeven(aggres
 print(f"Quarters to margin breakeven - hold:       {quarters_to_breakeven(hold)}")
 """)
 
-md(r"""**The core comparison.** Holding expansion reaches contribution-margin breakeven **around Q7**,
-while aggressive expansion does **not** break even within the three-year horizon. The mechanism is
-visible in the left panel: every new store enters at ~400 orders/day, so opening 60/quarter
-(aggressive) holds the network *average* down (the **B1 dilution** loop) faster than maturation can
-lift it. Holding at maintenance pace removes that drag and lets the **B2 maturation** loop carry
-density up through the 1,552 breakeven, at which point margin turns positive and the **R1** capex loop
-reinforces it. This is the base-case story - Section 5 tests how robust it is.""")
+md(r"""**The core comparison.** With the real-data anchors (Instamart at 1,093 orders/store/day, a
+central breakeven near 1,300, and ~Rs.1cr stores), **both** strategies now reach contribution-margin
+breakeven - but **holding gets there much sooner (~Q2.3 vs ~Q4.5) and ends far higher (+4.7% vs
++1.1% by Q12).** The mechanism is visible in the left panel: every new store enters at ~400 orders/day,
+so opening 60/quarter (aggressive) holds the network *average* down (the **B1 dilution** loop). Because
+Instamart is now only ~200 orders from breakeven and the density->margin slope is steeper than the old
+model assumed, aggressive expansion eventually recovers - but it spends the whole horizon climbing back
+out of the dilution hole, while holding lets the **B2 maturation** loop carry density straight through
+the ~1,300 breakeven and the **R1** capex loop reinforces it. This is the base case - Section 5 tests
+how robust the *hold-beats-expand* ordering is.""")
 
 md(r"""### 3.1 The gap, in rupees
 
@@ -286,13 +296,14 @@ print(f"Expansion capex avoided by holding: Rs.{dilution_capex_qtr:,.0f} cr/quar
       f"(~Rs.{dilution_capex_qtr*4:,.0f} cr/year) freed for densification instead of dilution.")
 """)
 
-md(r"""**Reading the rupee gap.** Holding is worth **~Rs.601 cr of cumulative contribution** over three
-years versus aggressive expansion, and frees **~Rs.192 cr/quarter (~Rs.770 cr/year)** of capex that
-would otherwise be spent opening dilutive stores. The figure is modest relative to Instamart's scale -
-this is a *timing and efficiency* lever (reach profitability sooner, spend less getting there), not a
-step-change in the prize. Its real value is that the freed capex is exactly what funds the density push
-that drives the margin recovery in the first place - the same rupees, redirected from dilution to
-maturation.""")
+md(r"""**Reading the rupee gap.** Holding is worth **~Rs.1,387 cr of cumulative contribution** over three
+years versus aggressive expansion - larger than the earlier estimate because the steeper, real-data
+density->margin slope lets hold's margin climb to ~+4.7% while aggressive stays near +1.1%. The capex
+holding frees is now **~Rs.55 cr/quarter (~Rs.220 cr/year)** - *smaller* than before, precisely because
+the corrected ~Rs.1cr store cost (vs the old Rs.3.5cr) means each avoided store saves less cash. The two
+move in opposite directions for the same reason: cheaper stores make expansion less ruinous, so the case
+for holding rests less on *capex saved* and more on *margin gained sooner*. It remains a timing-and-
+efficiency lever, not a step-change in the prize.""")
 
 # ---------------------------------------------------------------------------
 md(r"""## 4. (Optional) The same model in BPTK-Py
@@ -368,8 +379,8 @@ The swept uncertainties:
 | Parameter | Range | Why uncertain |
 |---|---|---|
 | `maturation_qtr` | 1.0 - 4.0 | "a few quarters to mature" is itself a range (smaller = faster) |
-| `margin_slope` | 2e-5 - 8e-5 | the density->margin sensitivity; the range brackets the 1,552-anchored base (~3.4e-5) and Notebook 06a's regressed ~7.9e-5 |
-| `capex_per_store` | 2.5 - 5.0 | no disclosed per-store build cost |
+| `margin_slope` | 3e-5 - 1.4e-4 | the density->margin sensitivity; the range brackets a conservative ~1,700-breakeven read (3e-5) and Redseer's ~1,225 mature-metro breakeven (1.4e-4), with Notebook 06a's regressed ~7.9e-5 inside it |
+| `capex_per_store` | 0.7 - 2.5 | Rs cr to build a dark store; Blinkit-implied ~1.0, with headroom for higher-cost stores |
 | `new_store_density` | 300 - 500 | where a new store realistically starts |
 
 A higher `margin_slope` both steepens the density->margin response *and* pulls the effective breakeven
@@ -392,8 +403,8 @@ def latin_hypercube(n, bounds, seed=RNG_SEED):
 
 UNCERTAIN = {
     "maturation_qtr":   (1.0, 4.0),
-    "margin_slope":     (0.00002, 0.00008),
-    "capex_per_store":  (2.5, 5.0),
+    "margin_slope":     (0.00003, 0.00014),
+    "capex_per_store":  (0.7, 2.5),
     "new_store_density":(300.0, 500.0),
 }
 names  = list(UNCERTAIN.keys())
@@ -454,12 +465,12 @@ else:
     print(imp.sort_values(ascending=False).round(3).to_string())
 """)
 
-md(r"""**What actually controls the outcome.** Two assumptions dominate time-to-breakeven - the
-**density->margin slope (~0.58)** and **maturation speed (~0.41)** - while the per-store build cost and
-the new-store starting density barely register (~0.00). That is a useful simplification: holding's
-success is essentially a **2-D problem**, governed by *how steeply density converts to margin* and *how
-fast stores mature*. Everything else is second-order - which is why the next chart can tell the whole
-story on just those two axes.""")
+md(r"""**What actually controls the outcome.** One assumption now dominates time-to-breakeven - the
+**density->margin slope (~0.67)** - with **maturation speed (~0.32)** a clear second and the per-store
+build cost and new-store density barely registering (~0.00). The slope matters even more than in the
+earlier model because, anchored to the real ~1,300 breakeven, it governs *how fast* Instamart's already-
+near-breakeven density converts into positive margin. Practically: holding's success is essentially a
+**1-2D problem** - get the density->margin conversion right and the rest follows.""")
 
 md(r"""### 5.2 Where does hold win? The success region
 
@@ -521,11 +532,14 @@ plt.savefig(PROCESSED / "b6c_chart_scenario_discovery.png", bbox_inches="tight")
 plt.show()
 """)
 
-md(r"""The scatter makes the deep-uncertainty finding visual: failures (red, "never") and slow successes
-(orange) cluster at **low margin slope and slow maturation** (bottom-left/upper region), while the
-**fast** wins (green) fill the strong-slope, fast-maturation corner the success box encloses. Note the
-other two swept parameters (`capex_per_store`, `new_store_density`) don't appear here because the random
-forest found them near-irrelevant - the outcome is essentially a 2-D story.""")
+md(r"""The scatter makes the finding visual - and the headline is how *much green* there is. With the
+real-data anchors, holding reaches breakeven fast (<= 8 quarters) in **91%** of futures, so the "success
+region" is now most of the map. The few failures (red, "never", ~3%) and slow successes (orange) hug the
+**low-margin-slope** edge on the left; once the slope clears ~8.5e-5 the outcome is fast essentially
+everywhere (the success box runs at 100%). `maturation_qtr` is a weaker second axis and `capex_per_store`
+/ `new_store_density` don't appear at all - the random forest found them near-irrelevant. The story has
+shifted from the earlier "conditional success in a corner" to "**near-universal success, with margin
+slope setting only the *speed*.**" """)
 
 # ---------------------------------------------------------------------------
 md(r"""### 5.3 Does hold actually *beat* expand across futures?
@@ -560,14 +574,15 @@ plt.show()
 """)
 
 md(r"""**The decision, settled across futures.** This is the chart that actually answers *hold vs expand*.
-Holding reaches breakeven **sooner in 84% of the 2,000 futures**, and - crucially - there are **no points
-above the diagonal**: aggressive expansion *never strictly beats* holding. The remaining 16% are ties,
-overwhelmingly the top-right cluster where *neither* strategy breaks even within three years (the
-genuinely hostile futures). Aggressive expansion reaches breakeven *at all* in only **19%** of futures -
-the vertical strip at "never" is where holding wins simply by not drowning the network average in
-400-order/day stores. The board-level takeaway: holding is not a bet that *might* pay off - it weakly
-dominates expansion across essentially the entire plausible range, and the only open question is whether
-it pays off *fast*, which Sections 5.1-5.2 answer.""")
+Holding reaches breakeven **sooner in 97% of the 2,000 futures**, and there are **no points above the
+diagonal**: aggressive expansion *never strictly beats* holding. What changed under the real data is the
+*aggressive* side - with ~Rs.1cr stores (not Rs.3.5cr) and a steeper slope, aggressive expansion now
+reaches breakeven *at all* in **40% of futures** (up from 19%), so it is no longer a doomed strategy.
+But it remains **fragile** - it only works when stores are cheap, the slope is steep, *and* maturation is
+fast simultaneously - whereas holding works in nearly every future. The board-level takeaway is now
+even cleaner: holding doesn't just win on a technicality, it weakly dominates expansion across essentially
+the entire plausible range, and Instamart is close enough to breakeven that the payoff is *fast* (median
+Q3) in the large majority of cases.""")
 
 # ---------------------------------------------------------------------------
 md(r"""### 5.4 The envelope of outcomes
@@ -598,7 +613,7 @@ def _band(ax, arr, base_line, color):
 
 fig, axes = plt.subplots(1, 2, figsize=(13, 4.5))
 _band(axes[0], dens_arr, hold["avg_density"].values, SWIGGY)
-axes[0].axhline(SD["breakeven_density"], color="grey", linestyle="--", linewidth=0.9, label="Breakeven (1552)")
+axes[0].axhline(SD["breakeven_density"], color="grey", linestyle="--", linewidth=0.9, label="Breakeven (~1300)")
 axes[0].set_title("Density envelope across uncertain futures (hold)")
 axes[0].set_xlabel("Quarter"); axes[0].set_ylabel("Orders/store/day"); axes[0].legend(fontsize=8)
 
@@ -616,14 +631,14 @@ print(f"Density @Q12 across futures: P10 {np.percentile(dens_arr[:,-1],10):.0f} 
 """)
 
 md(r"""**Where holding lands, with honest spread.** Across the uncertain futures, density climbs to a
-median **~1,644 orders/store/day** by Q12 (P10-P90 ~**1,500-1,895**), the median crossing the 1,552
-breakeven around Q9-10; contribution margin's median turns positive around **Q6** and lands between
-**-0.3% and +3.5%** by Q12. The *band* matters as much as the line: even the pessimistic P10 path gets
-density to ~1,500 (essentially at breakeven), while the optimistic P90 reaches the high-1,800s and a
-+3-4% margin. Holding doesn't guarantee a specific number - but across the plausible range it reliably
-pushes density toward the breakeven and margin toward positive, which is the structural case for the
-strategy. (The base-case line sits inside the band, a touch above the median on density because its
-maturation is faster than the sweep's median draw.)""")
+median **~1,725 orders/store/day** by Q12 (P10-P90 ~**1,596-1,923**), comfortably through the ~1,300
+breakeven; contribution margin's median turns positive early and lands between **+0.6% and +5.0%** by Q12
+(median ~+3.8%). The striking shift from the earlier model is that **even the pessimistic P10 path is now
+margin-positive (+0.6%)** - because Instamart starts only ~200 orders below breakeven, almost every
+plausible future gets it over the line. The remaining downside is *slow*, not *negative*: ~6% of futures
+break even late (Q9-12) and only ~3% not at all. Holding doesn't guarantee a number, but the whole band
+has shifted into profitable territory - the structural case for the strategy, now reinforced rather than
+merely supported by the real data.""")
 
 # ---------------------------------------------------------------------------
 md(r"""## 6. (Optional) Canonical tooling: EMA Workbench + PRIM
@@ -645,7 +660,7 @@ try:
     ema_logging.log_to_stderr(logging.WARNING)   # use stdlib level (ema_logging.WARNING was removed)
 
     def ema_wrapper(maturation_qtr=2.0, margin_slope=SD["margin_slope"],
-                    capex_per_store=3.5, new_store_density=400.0):
+                    capex_per_store=1.0, new_store_density=400.0):
         p = dict(SD, maturation_qtr=maturation_qtr, margin_slope=margin_slope,
                  capex_per_store=capex_per_store, new_store_density=new_store_density)
         run = run_strategy("hold", p=p)
@@ -656,8 +671,8 @@ try:
 
     em = EMAModel("InstamartHold", function=ema_wrapper)
     em.uncertainties = [RealParameter("maturation_qtr", 1.0, 4.0),
-                        RealParameter("margin_slope", 0.00002, 0.00008),
-                        RealParameter("capex_per_store", 2.5, 5.0),
+                        RealParameter("margin_slope", 0.00003, 0.00014),
+                        RealParameter("capex_per_store", 0.7, 2.5),
                         RealParameter("new_store_density", 300.0, 500.0)]
     em.outcomes = [ScalarOutcome("quarters_to_breakeven"),
                    ScalarOutcome("final_margin"),
@@ -714,38 +729,44 @@ That cross-check is what turns "I drew a box" into a defensible scenario-discove
 # ---------------------------------------------------------------------------
 md(r"""## 7. Verdict and honest limitations
 
-**Verdict on Strategy 3.** In the base case, **holding expansion reaches contribution-margin breakeven
-around Q7, while aggressive expansion does not break even within the three-year horizon at all** -
-because aggressive opening keeps adding ~400-order/day stores that hold the network average down (B1
-dilution) faster than maturation can lift it. In rupees (Section 3.1), holding is worth **~Rs.600 cr of
-cumulative extra contribution over three years** and frees **~Rs.190 cr/quarter** of expansion capex to
-redeploy into densification rather than dilution.
+**Verdict on Strategy 3.** In the base case, **holding reaches contribution-margin breakeven around Q2-3
+and climbs to ~+4.7% by Q12, while aggressive expansion breaks even later (~Q4-5) and stalls near +1.1%**
+- because aggressive opening keeps adding ~400-order/day stores that hold the network average down (B1
+dilution), and although the steeper real-data slope lets it eventually recover, it spends the horizon
+climbing out of the hole holding never digs. In rupees (Section 3.1), holding is worth **~Rs.1,387 cr of
+cumulative extra contribution over three years**; the expansion capex it frees is now smaller
+(**~Rs.55 cr/quarter**) because the corrected ~Rs.1cr store cost makes expansion far less ruinous than
+the old Rs.3.5cr figure implied.
 
-But the deep-uncertainty analysis is the real finding, and it now answers the actual *hold-vs-expand*
-decision, not just "does hold work?":
+But the deep-uncertainty analysis is the real finding - and under the real-data anchors it is **stronger,
+not just robust**:
 
-- **Hold beats expand in ~84% of the 2,000 futures** (it breaks even sooner); aggressive expansion
-  reaches breakeven *at all* in only ~19% of them (Section 5.3). So the *direction* is robust.
-- **Speed is conditional.** Hold reaches breakeven within 8 quarters reliably only when the
-  **density->margin slope is strong and store maturation is fast** - the two dominant drivers (capex-per-
-  store and new-store density barely matter, Section 5.1). The success-region scatter (5.2) shows the
-  green "fast" wins filling exactly that corner, and **PRIM independently recovers the same box**
-  (Section 6) - margin_slope high, maturation_qtr low.
-- **The envelope (5.4)** shows density landing at a P10-P90 of ~1,500-1,900 orders/day by Q12, i.e.
-  across the plausible futures hold gets density across or near the breakeven, with margin P10-P90
-  straddling zero-to-+3.5%.
+- **Hold beats expand in ~97% of the 2,000 futures** (it breaks even sooner, median Q3); aggressive
+  expansion reaches breakeven *at all* in 40% of them (up from 19% - cheaper stores make it viable, but
+  it stays fragile). So the *direction* is now near-universal (Section 5.3).
+- **Success is near-universal; only *speed* is conditional.** Hold reaches breakeven fast (<= 8 quarters)
+  in **91%** of futures, with **margin_slope the single dominant driver** (~0.67 importance; maturation a
+  weaker second, capex/new-store density ~0). Above a slope of ~8.5e-5 the fast-breakeven rate is ~100%.
+  **PRIM independently isolates margin_slope** as the controlling restriction (Section 6).
+- **The envelope (5.4)** shows density landing at a P10-P90 of ~1,596-1,923 orders/day by Q12, with margin
+  **P10-P90 of +0.6% to +5.0%** - i.e. *even the pessimistic path is now profitable*, because Instamart
+  starts only ~200 orders below breakeven.
 
-That conditional, region-specific answer - *"hold beats expand in the large majority of futures, and
-here are the two assumptions that decide whether it wins quickly"* - is exactly what a senior consultant
-should hand a C-suite, rather than a single deterministic line.
+The honest update is that the real public data did not break the recommendation - it **reinforced** it:
+holding wins more decisively (97% vs 84%) and faster (median Q3 vs Q5), and Instamart turns out to be far
+closer to profitability than the conservative model assumed. The residual nuance is that aggressive
+expansion is no longer doomed (40% of futures), so the case for holding rests on *winning sooner and
+ending higher*, not on expansion being impossible.
 
 **Limitations:**
 
 1. **The structural coefficients are assumptions**, which is precisely why Section 5 sweeps them. The
-   most important, `margin_slope`, is anchored to make margin cross 0 at the Notebook-02 1,552
-   breakeven (~3.4e-5); Notebook 06a's store-level regression implies a steeper ~7.9e-5 (earlier
-   breakeven). The sweep range (2e-5 - 8e-5) brackets both, and the result is sensitive to it - the
-   single biggest thing to pin down with real store-level margin data.
+   most important, `margin_slope`, is anchored so margin crosses 0 at a central ~1,300 breakeven
+   (~8.7e-5) - consistent with Redseer's ~1,200-1,250 mature-metro band and Notebook 06a's regressed
+   ~7.9e-5. The sweep range (3e-5 - 1.4e-4) brackets a conservative ~1,700-breakeven read down to
+   Redseer's ~1,225, and the result is sensitive to it - the single biggest thing to pin down with real
+   store-level margin data. Note the breakeven is genuinely **cohort-dependent** (metros far below it,
+   tier-3 above), so the single network number is itself a simplification (see 06d's geographic lens).
 2. **The dilution and maturation forms are stylised.** Real new-store ramp curves are S-shaped and
    vary by city tier; the linear-toward-ceiling form is a simplification.
 3. **Competitive pressure is not modelled as an active loop in this version.** Flipkart Minutes /
@@ -768,12 +789,12 @@ md(r"""## Glossary
 
 | Term | Full Form | Definition |
 |---|---|---|
-| **Density** | Orders per Store per Day | How productively each dark store is used - the central variable in this notebook. Instamart runs at ~1,025 vs its ~2,000 capacity ceiling; higher density spreads fixed store costs over more orders, lifting contribution margin. |
-| **Breakeven Density** | - | The density at which contribution margin crosses zero. Notebook 02's store-level model puts it at ~**1,552** orders/store/day; the margin curve here is anchored to cross 0 exactly there. |
+| **Density** | Orders per Store per Day | How productively each dark store is used - the central variable in this notebook. Instamart runs at **~1,093** (Q4 FY26) vs its ~2,000 capacity ceiling; higher density spreads fixed store costs over more orders, lifting contribution margin. |
+| **Breakeven Density** | - | The density at which contribution margin crosses zero. Redseer puts the mature-metro breakeven at **~1,200-1,250**; this notebook uses a central ~**1,300** network estimate (cohort-dependent). Instamart at 1,093 is only ~200 orders away - far closer than the earlier 1,552 figure implied. |
 | **Density Ceiling** | - | The maximum sustainable density per store (~2,000, Swiggy-stated). Stores mature *toward* this ceiling; the closer they are, the less headroom remains. |
 | **Contribution Margin** | - | Revenue minus the variable costs of each order (delivery, payments, packaging), as a % of order value. Instamart was at -1.8% in Q4FY26 - it still loses money per order on average, but the gap narrows as density rises. |
 | **Dark Store** | - | A fulfilment warehouse built only for online order-picking (no walk-in customers) - the physical unit of quick-commerce supply. Instamart operates 1,143; the strategy question is whether to keep opening them. |
-| **Capex** | Capital Expenditure | Cash spent on long-term assets - here, building dark stores (~Rs 3.5 cr each) and funding densification. The hold-vs-expand choice is fundamentally about where this capex goes: opening stores, or maturing existing ones. |
+| **Capex** | Capital Expenditure | Cash spent on long-term assets - here, building dark stores (**~Rs 1 cr each**, Blinkit-implied; an earlier ~Rs 3.5cr figure conflated inventory working capital and leases) and funding densification. The hold-vs-expand choice is fundamentally about where this capex goes: opening stores, or maturing existing ones. |
 | **NOV** | Net Order Value | Order value net of discounts/cancellations - Swiggy's primary quick-commerce revenue metric (~Rs 5,675 cr/quarter for Instamart). Used here to translate the margin gap into rupees. |
 | **Hold vs Expand** | - | The two strategies compared. **Aggressive expansion** keeps opening ~60 stores/quarter (current pace); **hold-and-densify** opens ~5/quarter (maintenance only) and lets the existing network fill up first. |
 
@@ -804,12 +825,12 @@ md(r"""## Glossary
 | **Deep Uncertainty** | - | A situation where you don't know the *probabilities* of the key inputs (here, the four structural coefficients), only plausible *ranges*. The honest response is not a single forecast but exploring *across* the ranges to find when a strategy succeeds. |
 | **Latin Hypercube Sampling** | LHS | A space-filling sampling design that spreads points evenly across every input range - far more efficient than random or full-grid sampling for mapping where a strategy wins. Used to generate the 2,000 scenarios. |
 | **Scenario Discovery** | - | Working *backwards* from outcomes to inputs: instead of "what happens if X?", it asks "*which* combinations of assumptions produce success (or failure)?" - and describes that region. The point of Section 5. |
-| **Success Box** | - | A simple rectangular region of the input space where the strategy reliably wins. Here, `margin_slope` high **and** `maturation_qtr` low -> ~100% fast breakeven. Identified two ways: a transparent median split, and PRIM. |
+| **Success Box** | - | A simple rectangular region of the input space where the strategy reliably wins. Under the real-data anchors success is near-universal (~91% fast), so the box is most of the space; the one consistently binding condition is `margin_slope` high (>= ~8.5e-5 -> ~100% fast). Identified two ways: a transparent median split, and PRIM. |
 | **PRIM** | Patient Rule Induction Method | The canonical scenario-discovery algorithm. It iteratively "peels" away slices of the input space to find a box with a high concentration of cases-of-interest - a rigorous version of the median-split box. |
 | **Coverage** (PRIM) | - | The share of *all* cases-of-interest (e.g. all fast-breakeven scenarios) that fall inside the box. High coverage = the box captures most of the wins. |
 | **Density / Purity** (PRIM) | - | The share of cases *inside the box* that are cases-of-interest. High density = the box is "pure" (almost everything in it is a win). PRIM's peeling trades coverage off against density. |
-| **Feature Importance** | - | A random-forest ranking of how much each uncertain input drives the outcome (time-to-breakeven). Here `margin_slope` (~0.58) and `maturation_qtr` (~0.41) dominate; the other two are ~0, making it effectively a 2-D problem. |
-| **Robustness** | - | Whether a conclusion holds *across* the uncertainty, not just at the base case. The key finding: holding beats expansion in 84% of futures (the direction is robust), even though the *speed* of payoff is conditional. |
+| **Feature Importance** | - | A random-forest ranking of how much each uncertain input drives the outcome (time-to-breakeven). Here `margin_slope` (~0.67) dominates, `maturation_qtr` (~0.32) is a clear second, and the other two are ~0 - so the outcome is essentially governed by one driver. |
+| **Robustness** | - | Whether a conclusion holds *across* the uncertainty, not just at the base case. The key finding: holding beats expansion in **97%** of futures (near-universal) and breaks even fast (median Q3) in the large majority - the real-data anchors made the result more robust, not less. |
 | **EMA Workbench** | Exploratory Modeling and Analysis | A Python library for deep-uncertainty analysis (sampling, experiments, PRIM). Used in the optional cells as the canonical toolchain; the scipy + Latin-hypercube version produces the same results without the dependency. |
 | **P10 / P50 / P90** | 10th / 50th / 90th Percentile | The envelope bands across scenarios: P10 is the pessimistic path (only 10% do worse), P50 the median, P90 the optimistic. Presenting the band is more honest than a single trajectory. |
 """)

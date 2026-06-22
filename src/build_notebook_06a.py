@@ -13,13 +13,14 @@ below.
 CHANGE LOG (audit fixes)
 ------------------------
 Calibration (numbers now trace to master_metrics.csv / sources):
-  * Inventory-model margin lever uses the DISCLOSED 60 bps (Inventory Model Margin Benefit,
-    master row 85) spread over the full 10% -> 90% transition, NOT the previously-invented
-    240 bps. The 240 bps figure and the unused `blinkit_contribution_margin` constant are
-    removed.
+  * Inventory-model margin lever uses ~100 bps (master row 85) spread over the full 10% -> 90%
+    transition. REAL-DATA NOTE: this is Blinkit's OBSERVED EBITDA accretion (Eternal CFO), used as
+    the proxy for Instamart's potential since Swiggy never transitioned (vote failed); it is NOT a
+    Swiggy disclosure, and it replaces the earlier 60 bps misattribution (and the older invented 240 bps).
   * Density -> margin sensitivity is regressed LIVE from Notebook 02's simulated store
-    network (b1_..._PROXY.csv): slope ~0.0000794 margin-fraction per order/day, breakeven
-    ~1,552 orders/day (R^2 ~0.41). It is no longer an arbitrary coefficient.
+    network (b1_..._PROXY.csv): slope ~0.0000794 margin-fraction per order/day. The synthetic fit's own
+    x-intercept is ~1,552, but the real-data breakeven is ~1,225-1,300 (Redseer); the env anchors at the
+    disclosed (1,093 density, -1.8% margin) point, putting its effective breakeven near ~1,320.
   * The capex war-chest is initialised from the DISCLOSED Rs 4,475 cr QIP earmark for
     Instamart (master row 21); operating cash flow uses the DISCLOSED NOV Rs 5,675 cr
     (master row 4).
@@ -69,6 +70,14 @@ def code(text):
 md(r"""# 06a - Strategy 1: Inventory-Led Model Transition
 ### Tested with Reinforcement Learning (PPO)
 
+> **⚠ Real-data refresh (inputs updated).** The environment's inputs were re-anchored to validated public
+> data: baseline density **1,093** (Q4 FY26, was 1,025/Q2), the inventory benefit **~100 bps** (Blinkit's
+> observed EBITDA accretion, the proxy for Instamart's potential — Swiggy never transitioned), and 06c's
+> store cost now ~Rs 1 cr. The **result figures in the interpretation cells below** (cumulative
+> contribution, breakeven quarter, the distilled decision rules, the capex tornado) reflect the *prior*
+> run; they refresh — and should move up, since the inventory lever is now larger and Instamart starts
+> closer to breakeven — when the notebook is **re-executed**.
+
 **Where this sits in the case study**
 
 Notebooks 01-05 *diagnosed* why Instamart's path to profitability lags Blinkit. Notebook 06
@@ -81,10 +90,11 @@ Notebooks 01-05 *diagnosed* why Instamart's path to profitability lags Blinkit. 
 
 **The question this notebook answers**
 
-Branch 4 (logistics) found that 90% of Blinkit's NOV runs through an inventory-led model worth
-a stated 50-70 bps of margin, and that Swiggy's own shareholder vote to adopt the same model
-*failed by 2.65 pp* (72.35% vs. the 75% needed). So the lever exists and is proven by a
-competitor. The open question is one of **pace and sequencing**: if Swiggy did get to transition,
+Branch 4 (logistics) found that 90% of Blinkit's NOV runs through an inventory-led model worth a
+disclosed **~100 bps** of EBITDA accretion (Eternal CFO; ~300 bps gross-margin lift), and that Swiggy's
+own shareholder vote to adopt the same model *failed by 2.65 pp* (72.35% vs. the 75% needed) - so Swiggy
+has *not* transitioned, and this benefit is Blinkit's observed figure used as Instamart's proxy. The
+lever exists and is proven by a competitor. The open question is one of **pace and sequencing**: if Swiggy did get to transition,
 how aggressively should it push the inventory-led share each quarter, given that the transition
 costs capex, and that same capex is also what funds the density growth that drives the *larger*
 share of the margin gap?
@@ -97,10 +107,12 @@ calibrated to disclosed figures, and train a PPO agent to learn the optimal tran
 
 Every economic coefficient in this environment is now tied to a disclosed or derived source:
 
-- the **inventory lever** is the disclosed **60 bps** (CFO-stated 50-70 bps midpoint) earned across
-  the full 10% -> 90% transition - *not* an inflated assumption;
+- the **inventory lever** is **~100 bps** - Blinkit's *observed* EBITDA accretion (Eternal CFO: ~100 bps
+  + ~300 bps gross margin), used as the proxy for what Instamart *could* gain, since Swiggy never
+  transitioned (the IOCC vote failed). It is *not* an inflated assumption;
 - the **density lever** is the slope regressed from Notebook 02's *simulated* n=1,143 store network
-  (~0.0000794 margin per order/day, breakeven ~1,552), which is far larger than the inventory lever -
+  (~0.0000794 margin per order/day; the real-data breakeven is ~1,225-1,300 per Redseer, and the env
+  anchors at the disclosed (1,093, -1.8%) point), which is far larger than the inventory lever -
   consistent with the case-study thesis that **density, not the inventory model, is the dominant driver**;
 - the **capex war chest** starts from the disclosed Rs 4,475 cr QIP earmark and flexes with the
   disclosed Rs 5,675 cr NOV.
@@ -175,12 +187,12 @@ simulated store network (Notebook 02). Confidence tags: **D** = company-disclose
 **E** = analyst-estimated, **DV** = derived. Items tagged E are assumptions the policy rests on,
 flagged inline.
 
-> **The two margin levers, and which one actually matters.** The inventory-model lever is the
-> *disclosed* **60 bps** (`inv_total_bps`, master row 85), earned across the full 10% -> 90%
-> transition. The density lever is the slope of contribution margin on orders/store/day, regressed
-> live from Notebook 02's n=1,143 simulated network (`density_margin_slope`). That slope implies
-> climbing from today's ~1,025 to the ~2,000 capacity ceiling is worth **~7-8 percentage points** of
-> margin - an order of magnitude more than the inventory model. This is deliberate: it encodes the
+> **The two margin levers, and which one actually matters.** The inventory-model lever is **~100 bps**
+> (`inv_total_bps`, master row 85) - Blinkit's *observed* EBITDA accretion (Eternal CFO), the proxy for
+> Instamart's potential, since Swiggy never transitioned. The density lever is the slope of contribution
+> margin on orders/store/day, regressed live from Notebook 02's n=1,143 simulated network
+> (`density_margin_slope`). That slope implies climbing from today's ~1,093 toward the ~2,000 capacity
+> ceiling is worth **~7-8 percentage points** of margin - several times the inventory model. This is deliberate: it encodes the
 > case-study's central finding that **density/maturity is the core economic variable and the
 > inventory model is a secondary lever**. Earlier drafts inverted this by assigning the inventory
 > model a 240 bps effect with no individual source; that has been removed.
@@ -205,7 +217,9 @@ def lookup(company, metric, default=None, period=None):
 
 # --- Density -> margin relationship, regressed LIVE from Notebook 02's simulated network ---
 # This makes the density coefficient genuinely "calibrated to the n=1,143 sim" rather than a
-# hand-picked number. The same regression underpins Notebook 02's ~1,552 breakeven and R^2~0.41.
+# hand-picked number. The synthetic regression's own x-intercept is ~1,552 (higher than the real-data
+# breakeven of ~1,225-1,300 per Redseer); the RL env anchors at the disclosed (1,093, -1.8%) point and the
+# regression SLOPE (~7.9e-5), which puts the env's *effective* breakeven near ~1,320 - consistent with 06c.
 proxy = pd.read_csv(PROCESSED / "b1_instamart_simulated_store_level_PROXY.csv")
 _slope_pp, _intercept_pp = np.polyfit(proxy["orders_per_day"], proxy["contribution_margin_pct"], 1)
 _r2 = np.corrcoef(proxy["orders_per_day"], proxy["contribution_margin_pct"])[0, 1] ** 2
@@ -216,7 +230,7 @@ print(f"Notebook 02 regression  ->  slope={DENSITY_MARGIN_SLOPE:.8f} /order/day,
 
 BASELINE = {
     # -- Swiggy Instamart (starting state) -------------------------------------------------
-    "avg_density":            lookup("Swiggy Instamart", "Orders per Store per Day", 1025),          # D
+    "avg_density":            lookup("Swiggy Instamart", "Orders per Store per Day", 1093, period="Q4FY26"),  # D - Q4 FY26 (1,025 was Q2 FY26)
     "density_ceiling":        2000,                                                                  # D  - Swiggy stated 2,000+ capacity ceiling
     "breakeven_density":      round(BREAKEVEN_DENSITY, 1),                                           # DV - regressed above (Notebook 02)
     "density_margin_slope":   DENSITY_MARGIN_SLOPE,                                                  # DV - regressed above (Notebook 02)
@@ -227,17 +241,17 @@ BASELINE = {
     "nov_cr":                 lookup("Swiggy Instamart", "NOV", 5675, period="Q4FY26"),             # D  - Q4 FY26, drives operating cash flow
     "capex_reserve_cr":       lookup("Swiggy Instamart", "Capex Allocated from QIP", 4475),         # D  - QIP earmark, the transition war chest
     # -- Blinkit reference figures ---------------------------------------------------------
-    "blinkit_density":        lookup("Blinkit", "Orders per Store per Day", 1337),                   # DV - Nomura-derived
+    "blinkit_density":        lookup("Blinkit", "Orders per Store per Day", 1425),                   # DV - Q4 FY26, derived from Eternal letter
     "blinkit_market_share":   lookup("Blinkit", "Market Share", 46.0) / 100.0,                       # E  - S23
     "blinkit_inventory_led":  lookup("Blinkit", "Inventory-led NOV Share", 90.0) / 100.0,            # D  - the 90% transition ceiling
     "margin_cap":             lookup("Blinkit", "Mature Market EBITDA Margin (Gurgaon/Noida)",
                                      5.0) / 100.0,                                                   # D  - realistic upper bound on margin (Blinkit's best mature market)
     # -- Inventory model economics ---------------------------------------------------------
-    "inv_total_bps":          lookup("Swiggy Consolidated",
-                                     "Inventory Model Margin Benefit (stated)", 60.0),               # D  - 50-70 bps midpoint, full-transition benefit
+    "inv_total_bps":          lookup("Blinkit",
+                                     "Inventory Model Margin Benefit (EBITDA accretion)", 100.0),     # D  - Blinkit's OBSERVED ~100bps EBITDA accretion (Eternal CFO); the proxy for Instamart's potential. Swiggy never transitioned (IOCC vote failed), so this is NOT a Swiggy disclosure
     # -- Flagged ESTIMATES (no individual public source) -----------------------------------
-    "capex_per_5pp_cr":       80.0,    # E - Rs 80 cr to move inventory-led share +5 pp
-    "capex_per_density_cr":   4.0,     # E - Rs cr to lift network-avg density by 1 order/store/day (cf. 06c's Rs 2.5-5cr/store)
+    "capex_per_5pp_cr":       80.0,    # E - Rs 80 cr to move inventory-led share +5 pp (transition cost still unsourced)
+    "capex_per_density_cr":   4.0,     # E - Rs cr to lift network-avg density by 1 order/store/day (cf. 06c's ~Rs 1cr/store)
     "density_budget_cr":      300.0,   # E - max capex deployed to densification per quarter
     "drag_k":                 0.003,   # E - competitive-drag strength (margin pp per pp of share gap vs Blinkit)
 }
@@ -295,7 +309,7 @@ each relationship is either disclosed, regressed from a disclosed/simulated figu
 estimate.
 
 **Key causal relationships modelled:**
-1. `pct_inventory_led` up -> margin up, capped at the disclosed **60 bps** for a full 10%->90% transition.
+1. `pct_inventory_led` up -> margin up, capped at the disclosed **100 bps** for a full 10%->90% transition.
 2. `density` up -> margin up, at the slope regressed from Notebook 02 (the **dominant** lever).
 3. Operating contribution (margin x NOV) flows into the capex war chest: losses drain it, profits refill it.
 4. The war chest funds densification, and **transition spending competes with it** - the core tradeoff.
@@ -309,7 +323,7 @@ class InstamartTransitionEnv(gym.Env):
     from a marketplace-led to an inventory-led fulfilment model.
 
     Causal relationships modelled (calibrated to Notebook 01 / 02 figures):
-      1. Inventory-led share up  -> margin up, capped at the disclosed 60 bps full-transition benefit.
+      1. Inventory-led share up  -> margin up, capped at the disclosed 100 bps full-transition benefit.
       2. Density up              -> margin up, at the Notebook-02-regressed slope (dominant lever).
       3. Operating margin x NOV  -> drains/refills the capex war chest.
       4. War chest funds density; transition spending competes for the same rupees (the tradeoff).
@@ -336,7 +350,7 @@ class InstamartTransitionEnv(gym.Env):
         self.blinkit_share      = BASELINE["blinkit_market_share"]
         self.blinkit_inv        = BASELINE["blinkit_inventory_led"]
         self.margin_cap         = BASELINE["margin_cap"]
-        self.inv_total          = BASELINE["inv_total_bps"] / 10000.0   # 60 bps -> 0.006 fraction
+        self.inv_total          = BASELINE["inv_total_bps"] / 10000.0   # 100 bps -> 0.01 fraction
         # These four are the load-bearing ESTIMATES (no individual public source). They are
         # config-overridable so Section 9 can stress them one at a time without touching the class.
         self.capex_per_5pp      = self.cfg.get("capex_per_5pp",     BASELINE["capex_per_5pp_cr"])
@@ -378,7 +392,7 @@ class InstamartTransitionEnv(gym.Env):
         # Recompute margin from the current state (a clean function of state, not an accumulator).
         #   (a) Density lever - the DOMINANT driver, slope regressed from Notebook 02.
         density_lift = self.density_slope * (self.density - self.baseline_density)
-        #   (b) Inventory lever - disclosed 60 bps earned linearly across the 10% -> 90% transition.
+        #   (b) Inventory lever - disclosed 100 bps earned linearly across the 10% -> 90% transition.
         inv_lift = ((self.pct_inv - self.baseline_inv)
                     / (self.blinkit_inv - self.baseline_inv) * self.inv_total)
         #   (c) Competitive drag - measured relative to the starting share so baseline margin is exact.
@@ -724,7 +738,7 @@ md(r"""**The business case for a paced transition.** Left: contribution margin r
 not unbounded growth), crossing zero around Q3-Q4. The IQR band is tight (~+/-0.5pp), so the strategy is
 robust to the quarterly noise, not fragile. Right: the agent ramps inventory-led share from 10% to the
 ~90% ceiling over roughly the first six quarters, then stops. The implied inventory uplift is the
-disclosed ~60 bps across that swing; the remaining ~6-7pp of margin recovery comes from the density
+disclosed ~100 bps across that swing; the remaining ~6-7pp of margin recovery comes from the density
 lever working every quarter in the background - density is the dominant driver, exactly as the diagnosis
 predicted.""")
 
@@ -754,7 +768,7 @@ plt.show()
 md(r"""**The policy as a sentence.** The agent spends the first five quarters almost entirely on
 **Aggressive (+15pp)** pushes, takes one **Slow (+5pp)** step at Q6 to tap the 90% ceiling, then locks
 onto **Hold**. Two actions are essentially absent: *Moderate (+10pp)* (the faster Aggressive earns its
-capex cost sooner given the 60 bps payoff) and *Retreat (-5pp)* (which would both cost capex and lower
+capex cost sooner given the 100 bps payoff) and *Retreat (-5pp)* (which would both cost capex and lower
 margin - a double penalty). The heatmap below is the same signal at a glance.""")
 
 code(r"""
@@ -923,7 +937,7 @@ cr of cumulative contribution over three years** versus doing nothing, and pulls
 quarter (Q4 vs Q5)**. The *size* is the honest part - Rs. 302 cr over three years is ~0.4% of annualised
 turnover, exactly the footprint of a **secondary** lever: both policies capture the dominant density
 benefit, so this is the *incremental* value of timing the inventory transition well on top of density.
-The inventory model earns its ~60 bps and a quarter of earlier breakeven - worth doing, but the garnish,
+The inventory model earns its ~100 bps and a quarter of earlier breakeven - worth doing, but the garnish,
 not the meal.""")
 
 code(r"""
@@ -972,7 +986,7 @@ Translate the charts above into the one or two sentences you would say to a hiri
 Because training and the environment are both stochastic, describe the *pattern* rather than exact numbers:
 
 - The learned policy almost never chooses **Retreat** (it both costs capex and lowers margin) and
-  rarely sits on **Hold** for long - the model finds that the disclosed 60 bps inventory uplift is
+  rarely sits on **Hold** for long - the model finds that the disclosed 100 bps inventory uplift is
   worth its capex cost, *as long as* it does not starve the larger density lever.
 - It typically front-loads transition in the early-to-middle quarters, then eases off once
   inventory-led share approaches the Blinkit-like ceiling and lets the density -> margin reinforcing
@@ -981,7 +995,7 @@ Because training and the environment are both stochastic, describe the *pattern*
   qualitative finding: the inventory model is a real lever - but a *secondary* one. Most of the
   margin recovery in these trajectories comes from density, exactly as the diagnosis predicted.
 
-**Crucial caveat:** this is the optimal pace *inside the model*. The disclosed levers (60 bps
+**Crucial caveat:** this is the optimal pace *inside the model*. The disclosed levers (100 bps
 inventory, the Notebook-02 density slope) are sourced; the load-bearing *estimates* are now the
 capex parameters - the Rs 80 cr-per-5pp transition cost, the cost of buying density, and the
 quarterly densification budget. Section 8 stresses the reward weights; a real engagement would
@@ -1080,7 +1094,7 @@ def train_and_summarise(cfg, timesteps=150_000):
 # Low/high bracket for each estimate (kept near the values flagged inline in Section 2).
 capex_grid = {
     "capex_per_5pp":     (40.0, 120.0),   # Rs cr per 5pp transition step
-    "capex_per_density": (2.5, 5.0),      # Rs cr per order/store/day (cf. 06c's Rs 2.5-5cr/store)
+    "capex_per_density": (2.5, 5.0),      # Rs cr per order/store/day (06c now uses ~Rs 1cr/store)
     "density_budget":    (200.0, 400.0),  # Rs cr deployable to densification per quarter
     "drag_k":            (0.0, 0.006),    # competitive-drag strength
 }
@@ -1124,7 +1138,7 @@ md(r"""**The headline recommendation is not uniformly robust - and that is the p
 how far each estimate swings the *optimal* transition pace: **capex_per_density (80pp) ~ capex_per_5pp
 (78pp) >> density_budget (33pp) >> drag_k (0pp)**. The agent's decision is essentially **binary** - it
 either transitions fully (~0.90) or not at all (~0.10), flipping on whether the inventory lever's cost
-clears its 60 bps benefit: a dear transition (Rs 120 cr/5pp), cheap-to-buy density elsewhere
+clears its 100 bps benefit: a dear transition (Rs 120 cr/5pp), cheap-to-buy density elsewhere
 (Rs 5 cr/order/day), or a large densification budget (Rs 400 cr/qtr) each make it abandon the transition
 and pour capex into density instead.
 
@@ -1157,7 +1171,7 @@ EBITDA margin - the cap binds, so this is a ceiling, not unbounded growth), cros
 cumulative contribution over three years** versus doing nothing and pulls breakeven **forward one
 quarter (Q4 vs Q5)**. At ~0.4% of annualised turnover, that is precisely the footprint of a secondary
 lever - both policies capture the dominant density benefit; the inventory model only adds its disclosed
-~60 bps on top.
+~100 bps on top.
 
 **How it compares (Section 5.1 baselines, Section 6.1 learning curve, Section 7 improvements).**
 The agent converges to ~10.2 eval reward and clears the always-Hold floor (7.9) decisively and the

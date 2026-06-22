@@ -44,7 +44,7 @@ Question 2 is a **Monte Carlo** over the parameters we can't pin down precisely.
 
 Swiggy does not publish user-level data, so the per-user dataset here is **synthetic**, generated to
 match the disclosed aggregates from Notebook 01 (18.3M food-delivery MTU, 13.3M Instamart MTU, ₹700
-Instamart AOV; the 19.2% Instamart take rate is an analyst figure, not a company disclosure). Because we generate it, we also know each user's *true* treatment
+Instamart AOV; the ~19.5% Instamart take rate is JM Financial's Q4FY26 estimate, not a company disclosure). Because we generate it, we also know each user's *true* treatment
 effect, which lets us honestly validate whether the uplift model recovers it (Section 5). The point
 is to demonstrate the targeting-and-sizing methodology you'd run on real CRM data — not to claim
 these specific conversion numbers are what Swiggy would see.
@@ -96,15 +96,16 @@ def lookup(company, metric, default=None):
 FOOD_DELIVERY_MTU = lookup("Swiggy Food Delivery", "MTU", 18.3) * 1e6    # D
 INSTAMART_MTU     = lookup("Swiggy Instamart",     "MTU", 13.3) * 1e6    # E
 INSTAMART_AOV     = lookup("Swiggy Instamart", "AOV", 700)              # D
-# No company-disclosed Instamart take rate exists in master_metrics (the disclosed Take Rate
-# rows are food-delivery's ~25.8%). 19.2% is an analyst figure (JM Financial Q3 FY26), so E.
-INSTAMART_TAKE    = 0.192                                               # E — JM Financial Q3 FY26
+# No company-disclosed Instamart take rate exists in master_metrics (analyst Q4FY26 food-delivery take
+# rate is ~23% per JM/Motilal; the 25.8% figure was Q2FY26). 19.5% is JM Financial's Q4FY26 Instamart
+# estimate (master row 95), so E.
+INSTAMART_TAKE    = 0.195                                               # E — JM Financial Q4 FY26 (on NOV)
 
-FOOD_DELIVERY_AOV  = 480     # E — analyst estimate (contextual only; the sizing below uses Instamart AOV)
-ORDERS_PER_USER_PM = 4.2     # E — derived from Swiggy food-delivery disclosures
+FOOD_DELIVERY_AOV  = 480     # E — no public figure (contextual only; the sizing below uses Instamart AOV)
+ORDERS_PER_USER_PM = 4.01    # E — Swiggy Q4FY26 platform order frequency (platform-wide, not food-only); was 4.2
 ORGANIC_CONVERSION = 0.04    # E — assumed baseline crossover without any nudge
 
-CONVERSION_LOW, CONVERSION_MID, CONVERSION_HIGH = 0.08, 0.15, 0.25   # E — wide, no public benchmark
+CONVERSION_LOW, CONVERSION_MID, CONVERSION_HIGH = 0.08, 0.15, 0.25   # E — NO public benchmark (master row 100); modelled range
 TARGETING_REACH = 0.60       # E — share of FD users in Instamart-eligible zones
 
 print(f"Food-delivery MTU : {FOOD_DELIVERY_MTU/1e6:.1f}M  (D)")
@@ -126,7 +127,7 @@ code(r"""
 def generate_users(n=500_000, seed=RNG_SEED):
     rng = np.random.default_rng(seed)
 
-    order_freq      = rng.gamma(2.1, 2.0, n).clip(0.5, 20)            # ~4.2/mo mean
+    order_freq      = rng.gamma(2.1, 2.0, n).clip(0.5, 20)            # ~4/mo mean
     aov             = rng.lognormal(np.log(450), 0.4, n).clip(150, 1500)
     city_tier       = rng.choice([1, 2, 3], p=[0.40, 0.35, 0.25], size=n)
     days_since_last = rng.exponential(7, n).clip(0, 90)
@@ -861,7 +862,7 @@ store build, no supply-chain change, and no shareholder vote — while the slowe
 4. **The cost layers (contact, incentive) and the revenue-vs-profit framing are estimates.** The
    revenue-to-cost ratio is a CAC-efficiency screen, not profit ROI — true profit payback is gated on
    the still-negative contribution margin turning positive (06a / 06c).
-5. **Organic crossover (4%) and orders-per-user (4.2/mo) are estimates** that feed the sizing directly.
+5. **Organic crossover (4%) and orders-per-user (4.01/mo) are estimates** that feed the sizing directly.
 
 One-line framing: *"I used an X-Learner to rank which of Swiggy's 18.3M food-delivery users are most
 movable into Instamart, validated the ranking against ground truth, sized the prize net of acquisition
@@ -880,7 +881,7 @@ md(r"""## Glossary
 | **GOV** | Gross Order Value | The total value of all orders placed on the platform at the price the customer pays, before any deductions. Think of it as the top-line sales volume flowing through the platform. |
 | **NOV** | Net Order Value | GOV minus customer discounts, cancellations, and returns. Closer to what actually transacts net of promotional spend. Swiggy reports NOV as its primary quick-commerce revenue metric. |
 | **AOV** | Average Order Value | GOV (or NOV) divided by the number of orders. Instamart's AOV of ₹700 is meaningfully higher than Blinkit (₹525) and Zepto (₹387), reflecting a larger basket driven by planned grocery shopping rather than impulse top-ups. |
-| **Take Rate** | — | The share of GOV or NOV that the platform retains as revenue after paying out the merchant/supplier. For Instamart in marketplace mode, estimated at ~19.2% of GOV. For context, Swiggy Food Delivery's take rate is ~25.8%. |
+| **Take Rate** | — | The share of GOV or NOV that the platform retains as revenue after paying out the merchant/supplier. For Instamart, JM Financial estimates ~19.5% on NOV (Q4 FY26). For context, Swiggy Food Delivery's take rate is ~23% per Q4FY26 analyst estimates (an earlier 25.8% figure was Q2 FY26). |
 | **Contribution Margin** | — | Revenue minus variable costs directly attributable to each order (delivery cost, payment gateway fees, packaging). Expressed as a % of GOV or NOV. Instamart was at −1.8% in Q4FY26, meaning it still loses money on each order on average — but that is narrowing. |
 | **EBITDA** | Earnings Before Interest, Tax, Depreciation & Amortisation | A standard measure of operating profitability, stripping out financing and accounting charges. Quick commerce uses "Adjusted EBITDA" which also excludes ESOP costs. Blinkit reached +0.3% Adjusted EBITDA margin in Q4FY26 — the sector benchmark. |
 | **Capex** | Capital Expenditure | Cash spent on long-term assets — in quick commerce, primarily dark store build-out, cold-chain infrastructure, and technology. Competes directly with operating losses for the same war chest. |

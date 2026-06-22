@@ -15,7 +15,7 @@ row_id,company,segment,period,period_type,metric,value,unit,yoy_pct,qoq_pct,conf
 14,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Cities Covered,129.0,count,,,disclosed,S04,
 15,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Warehousing Area,4.8,million_sqft,21.1,,disclosed,S04,
 16,Swiggy Instamart,Quick Commerce,Q2FY26,quarterly,Orders per Store per Day,1025.0,orders,,4.0,disclosed,S01,
-17,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,MTU,13.3,million,,,analyst_estimate,,Cited in competitive-context analysis; cross-check against Swiggy's own MTU disclosure (Swiggy reports a consolidated/food-delivery MTU figure more prominently)
+17,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,MTU,13.3,million,,,disclosed,S26,Confirmed in Swiggy Q4FY26 shareholder letter (upgraded from analyst_estimate after real-data validation)
 18,Swiggy Instamart,Quick Commerce,Q2FY26,quarterly,Store Profitability Share,25.0,percent_of_stores,,,disclosed,S01,
 19,Swiggy Instamart,Quick Commerce,Q4FY25,quarterly,Store Profitability Share,10.0,percent_of_stores,,,analyst_estimate,,"Described only as '<10%, two quarters before Q2FY26' — treat as approximate"
 20,Swiggy Instamart,Quick Commerce,FY26,annual,Per Order Loss,85.18,INR,,,analyst_estimate,"S21,S22",
@@ -27,7 +27,7 @@ row_id,company,segment,period,period_type,metric,value,unit,yoy_pct,qoq_pct,conf
 26,Swiggy Food Delivery,Food Delivery,Q4FY26,quarterly,Adjusted EBITDA,297.0,INR_crore,40.0,,disclosed,"S03,S05",
 27,Swiggy Food Delivery,Food Delivery,Q4FY26,quarterly,GOV,9005.0,INR_crore,22.6,,disclosed,"S03,S05",
 28,Swiggy Food Delivery,Food Delivery,Q2FY26,quarterly,GOV,,INR_crore,18.8,,disclosed,S01,Absolute value not captured in source — YoY% only
-29,Swiggy Food Delivery,Food Delivery,Q2FY26,quarterly,Take Rate,25.8,percent,,,disclosed,S01,+10bps QoQ
+29,Swiggy Food Delivery,Food Delivery,Q2FY26,quarterly,Take Rate,25.8,percent,,,disclosed,S01,"+10bps QoQ per Q2FY26 letter. FLAG (real-data check): Q4FY26 analyst estimates cluster lower (~23% JM, ~22.8% Motilal, S24); basis may differ (letter take-rate vs analyst GOV-based). Treat 25.8% as Q2FY26-specific"
 30,Swiggy Food Delivery,Food Delivery,Q1FY26,quarterly,Take Rate,25.7,percent,,,derived,,
 31,Swiggy Food Delivery,Food Delivery,Q2FY26,quarterly,Contribution Margin,7.3,percent,,,disclosed,S01,Range-bound QoQ
 32,Swiggy Food Delivery,Food Delivery,Q4FY26,quarterly,MTU,18.3,million,21.0,,disclosed,S05,
@@ -68,7 +68,7 @@ row_id,company,segment,period,period_type,metric,value,unit,yoy_pct,qoq_pct,conf
 67,Blinkit,Quick Commerce,FY26,annual,Revenue from Operations,37779.0,INR_crore,,,disclosed,S14,Inventory-led model inflates this vs marketplace-model peers — NOT comparable to Swiggy/Zepto revenue without adjustment
 68,Blinkit,Quick Commerce,current,snapshot,Mature Market EBITDA Margin (Delhi NCR aggregate),3.5,percent,,,disclosed,S15,
 69,Blinkit,Quick Commerce,current,snapshot,Mature Market EBITDA Margin (Gurgaon/Noida),5.0,percent,,,disclosed,S15,
-70,Blinkit,Quick Commerce,current,snapshot,Orders per Store per Day,1337.0,orders,,,derived,S20,Derived from Nomura's relative framing: Zepto (~2140) is ~60% higher than Blinkit => Blinkit ≈ 2140/1.6
+70,Blinkit,Quick Commerce,Q4FY26,quarterly,Orders per Store per Day,1425.0,orders,,,derived,S27,"Q4 exit: ~273.9M quarterly orders / ~2,135 avg stores / 90 days (Eternal Q4FY26 letter). Supersedes earlier 1,337 Nomura-relative estimate (S20)"
 71,Zepto,Quick Commerce,FY25,annual,Revenue,11110.0,INR_crore,,,disclosed,S19,
 72,Zepto,Quick Commerce,Jan2026,snapshot,Market Share,22.0,percent,,,analyst_estimate,S23,
 73,Zepto,Quick Commerce,Q4FY26,quarterly,NRV,8134.0,INR_crore,73.0,28.0,disclosed,S19,
@@ -76,12 +76,26 @@ row_id,company,segment,period,period_type,metric,value,unit,yoy_pct,qoq_pct,conf
 75,Zepto,Quick Commerce,FY26,annual,Orders (Full Year),640.0,million,,,disclosed,S19,
 76,Zepto,Quick Commerce,FY25,annual,Orders (Full Year),332.0,million,,,disclosed,S19,
 77,Zepto,Quick Commerce,current,snapshot,AOV,387.0,INR,,,disclosed,S19,
-78,Zepto,Quick Commerce,current,snapshot,Orders per Store per Day,2140.0,orders,,,analyst_estimate,S20,
+78,Zepto,Quick Commerce,Q4FY26,quarterly,Orders per Store per Day,2045.0,orders,,,derived,S39,"~23.3 lakh orders/day / ~1,139 stores (Zepto UDRHP via Inc42). Supersedes earlier 2,140 estimate (S20)"
 79,Zepto,Quick Commerce,FY26,annual,Per Order Loss,78.75,INR,,,analyst_estimate,"S21,S22",
 80,Zepto,Quick Commerce,FY26,annual,Advertising Revenue,1636.0,INR_crore,,,disclosed,S19,~7.9% of NRV
 81,Top3 Aggregate,Market Structure,FY24,annual,Instamart Order Share (of Top 3),34.3,percent,,,disclosed,S19,
 82,Top3 Aggregate,Market Structure,FY25,annual,Instamart Order Share (of Top 3),24.5,percent,,,disclosed,S19,
 83,Top3 Aggregate,Market Structure,FY26,annual,Instamart Order Share (of Top 3),20.9,percent,,,disclosed,S19,
-84,Swiggy Consolidated,Governance,current,snapshot,IOCC Resolution Vote Share,72.35,percent,,,disclosed,,"Required 75% threshold to pass — resolution failed by 2.65pp, blocking the inventory-model transition"
-85,Swiggy Consolidated,Governance,current,snapshot,Inventory Model Margin Benefit (stated),60.0,bps,,,disclosed,,CFO-stated range was 50-70bps; midpoint used as a single point estimate
+84,Swiggy Consolidated,Governance,current,snapshot,IOCC Resolution Vote Share,72.35,percent,,,disclosed,S31,"Required 75%; failed by 2.65pp, blocking the inventory-model transition. Eternal/Outlook coverage cites 72.36%; Swiggy spokesperson cited 72.35%. Postal ballot closed 20 May 2026"
+85,Blinkit,Quick Commerce,FY26,annual,Inventory Model Margin Benefit (EBITDA accretion),100.0,bps,,,disclosed,S28,"CORRECTION (real-data validation): Eternal CFO Akshant Goyal (Q2FY26 call) stated ~1ppt (~100bps) EBITDA accretion + ~300bps gross-margin lift over 4-6 quarters. The earlier 60bps figure was misattributed to a 'Swiggy CFO' — Swiggy never transitioned (IOCC vote failed), so this is Blinkit's OBSERVED benefit used as the proxy for Instamart's potential"
 86,Swiggy Instamart,Quick Commerce,Jan2026,snapshot,Market Share,24.0,percent,,,analyst_estimate,S23,"Datum Intelligence / Reuters Jan 2026 snapshot (Blinkit 46%, Instamart 24%, Zepto 22%, Others 8%); previously hard-coded in notebook 06a, now a traceable row"
+87,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Orders per Store per Day,1093.0,orders,,,disclosed,S26,"REAL-DATA UPDATE: Q4FY26 = 1,093 (Swiggy Q4FY26 letter). The 1,025 figure used in early notebooks was Q2FY26 (row 16). Dipped from 1,190 in Q4FY25 as the network expanded, then recovered"
+88,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Net AOV,485.0,INR,,,derived,S26,"Net AOV ~485 vs gross AOV 700 (row 11); cross-company AOV comparisons must match basis — Blinkit 525 is net, Zepto 387 is implied"
+89,Blinkit,Quick Commerce,Q4FY26,quarterly,MTU,27.2,million,,,disclosed,S27,Eternal Q4FY26 shareholder letter (monthly transacting customers)
+90,Industry,Quick Commerce,2026,snapshot,Breakeven Density (mature metro),1225.0,orders,,,analyst_estimate,S30,"REAL-DATA UPDATE: Redseer 'Dark Store Blind Spot' mature-metro breakeven ~1,200-1,250; PAN-India OPD/store ~1,255; non-metro ~850. Earlier 1,552 (nb02 network regression) overstated it and was inconsistent with the near-zero disclosed CM; cohort-dependent, not a single number"
+91,Swiggy Instamart,Quick Commerce,Q2FY26,quarterly,Capacity Ceiling per Store,2000.0,orders,,,disclosed,S01,"'darkstores can operate at 2000+ orders (megapods at much higher levels)' — Swiggy Q2FY26 letter"
+92,Blinkit,Quick Commerce,FY26,annual,Capex per Dark Store,1.0,INR_crore,,,analyst_estimate,S29,"REAL-DATA UPDATE: implied ~Rs 1cr/store (Rs 26cr NOV/yr, ~40% ROCE; Zomato filings ~Rs 370cr for 368 stores). Earlier Rs 3.5cr conflated inventory working capital + multi-year lease"
+93,Blinkit,Quick Commerce,FY26,annual,Inventory Model Gross-Margin Lift,300.0,bps,,,disclosed,S28,Eternal CFO Goyal — ~300bps gross-margin lift from inventory shift (companion to the ~100bps EBITDA accretion in row 85)
+94,Swiggy Consolidated,Consolidated,Q4FY26,quarterly,Platform Order Frequency,4.01,orders_per_user,,,disclosed,S26,"Platform-wide (not food-only); 4.22 was Q4FY25. Earlier 4.2 'food orders/user' assumption conflated the two"
+95,Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Take Rate,19.5,percent,,,analyst_estimate,S24,"JM Financial estimate on NOV (Motilal ~12.8% on GOV). Aligns with the ~19.2% used in 06b"
+96,Blinkit,Quick Commerce,FY26,annual,Store Maturation Time,4.5,months,,,analyst_estimate,S33,"Blinkit 3-6 months to mature density; non-metro 6-12mo (Bernstein). ~4.5mo midpoint ~= the ~2-quarter assumption in 06c"
+97,Flipkart Minutes,Quick Commerce,Q1CY26,quarterly,Dark Stores (count),800.0,count,,,analyst_estimate,S34,"~800 stores, adding ~100/month; targeting 1,200-1,500 by end-2026"
+98,Amazon Now,Quick Commerce,Apr2026,snapshot,Micro-Fulfilment Centre Target,1000.0,count,,,disclosed,S34,"Stated plan: 100 cities, 1,000+ MFCs (from ~300), Rs 2,800cr investment"
+99,JioMart,Quick Commerce,Q3FY26,quarterly,Orders per Day,1.6,million,,53.0,disclosed,S35,"+53% QoQ; CFO Dinesh Taluja claims contribution-margin positive on Reliance grocery-sourcing scale; ~800 dark stores"
+100,Swiggy Instamart,Quick Commerce,FY26,annual,FoodDelivery-to-QC Cross-sell Conversion,,percent,,,analyst_estimate,S38,"NO PUBLIC DATA — Swiggy calls the food-vs-new-user split 'sensitive'; Eternal runs separate apps. Modeled in 06b as an 8-25% sensitivity range. BofA's '20% use both food apps' is cross-app overlap within food delivery, NOT food->grocery cross-sell"

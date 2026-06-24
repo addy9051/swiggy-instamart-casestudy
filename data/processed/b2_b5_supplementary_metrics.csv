@@ -1,10 +1,10 @@
 company,segment,period,period_type,metric,value,unit,confidence,source_id,notes
-Blinkit,Quick Commerce,Q4FY26,quarterly,MTU,27.2,million,analyst_estimate,S25,Cited in issue-tree synthesis; recommend verifying against Eternal's investor presentation directly
+Blinkit,Quick Commerce,Q4FY26,quarterly,MTU,27.2,million,disclosed,S27,Disclosed in Eternal's Q4FY26 shareholder letter (monthly transacting customers) — upgraded from analyst_estimate after the real-data fact-check
 Swiggy Instamart,Quick Commerce,FY25_approx,annual,Non-Grocery Share of GOV,8.0,percent,analyst_estimate,S25,Stated as '~7-9%' in earlier period — midpoint used
 Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Non-Grocery Share of GOV,26.0,percent,disclosed,"S03,S04",
 Swiggy Instamart,Quick Commerce,stated_target,target,Non-Grocery Share of GOV,50.0,percent,disclosed,S25,"Management's stated medium-term target, not a current measurement"
 Swiggy Instamart,Quick Commerce,Q2FY26,quarterly,Take Rate (Quick Commerce),21.1,percent_of_NOV,analyst_estimate,S24,JM Financial note — distinct from the Food Delivery take rate in the master file
 Swiggy Instamart,Quick Commerce,Q3FY26,quarterly,Take Rate (Quick Commerce),19.2,percent_of_NOV,analyst_estimate,S24,JM Financial note — softened from 21.1% the prior quarter
-Blinkit,Quick Commerce,FY25,annual,Advertising Revenue,1000.0,INR_crore,analyst_estimate,S25,"Reported only as 'crossed ₹1,000 crore' — treat as an approximate floor, not exact"
-Zepto,Quick Commerce,FY25,annual,Advertising Revenue,1000.0,INR_crore,analyst_estimate,S25,"Reported only as 'crossed ₹1,000 crore' — treat as an approximate floor, not exact"
+Swiggy Instamart,Quick Commerce,Q4FY26,quarterly,Take Rate (Quick Commerce),19.5,percent_of_NOV,analyst_estimate,S24,"JM Financial Q4FY26 estimate on NOV (master row 95) — ticked back up slightly, so the series is 'softened then stabilised', not monotonically falling"
+Blinkit,Quick Commerce,FY26,annual,Advertising Revenue,,INR_crore,analyst_estimate,S25,"NOT disclosed in absolute terms — Eternal says Blinkit ad revenue is a higher % of NOV than food delivery but gives no rupee figure. The earlier '~Rs 1,000cr' bar was unsourced and has been removed"
 Swiggy Instamart,Quick Commerce,FY26,annual,Advertising Revenue,,INR_crore,disclosed,,"Swiggy does not disclose a standalone Instamart ad-revenue figure — the non-disclosure itself is a finding, see H5.2 below"

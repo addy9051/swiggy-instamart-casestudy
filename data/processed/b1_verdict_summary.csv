@@ -1,7 +1,7 @@
 hypothesis_id,hypothesis,verdict,evidence
-H1.1,Network density materially below breakeven/ceiling,Supported,"Disclosed: 1,025 vs. stated 2,000+ ceiling (51% utilization)"
+H1.1,Network density materially below breakeven/ceiling,Supported,"Disclosed: 1,093 (Q4FY26) vs. stated 2,000+ ceiling (55% utilization); ~150-200 orders below the ~1,225-1,300 analyst breakeven"
 H1.2,Loss concentrated in a minority of stores,Supported,Disclosed: only ~25% of stores profitable as of Q2 FY26
-H1.3,"New stores take 6-12mo to mature, dragging blended margin",Inconclusive — not testable,No public store-cohort/vintage data available
+H1.3,"New stores take 6-12mo to mature, dragging blended margin",Inconclusive — not testable,"No public store-cohort/vintage data available (analyst benchmark: Blinkit 3-6mo, non-metro 6-12mo)"
 H1.4,Megapods improve throughput/margin via SKU breadth,"Directionally supportive, quantitatively thin","Qualitative only — SKU count, ~50% of net adds"
-Cross-player regression (n=3),Density alone explains the margin gap across companies,Weak/inconclusive,"Zepto: highest density, near-worst loss. Blinkit: mid density, best loss by far — business model likely dominates"
-Simulated store-level regression,Density predicts margin within a single network,Methodology demonstrated on calibrated proxy data,"R²=0.41 on n=1143 simulated stores; breakeven ≈ 1,552 orders/day"
+Cross-player regression (n=3),Density alone explains the margin gap across companies,Weak/inconclusive,"Zepto: highest density (~2,045), near-worst loss. Blinkit: mid density (~1,425), best loss by far — business model likely dominates"
+Simulated store-level regression,Density predicts margin within a single network,Methodology demonstrated on calibrated proxy data,"R²=0.42 on n=1143 simulated stores; proxy breakeven ≈ 1,619 (vs real-data ~1,225-1,300; slope agrees)"

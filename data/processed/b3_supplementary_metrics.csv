@@ -1,7 +1,7 @@
 company,segment,period,period_type,metric,value,unit,confidence,source_id,notes
-Swiggy Instamart,Quick Commerce,Jan2026,snapshot,Market Share,24,percent,analyst_estimate,S23,Completes the 3-way Jan 2026 snapshot started in the master file for Blinkit/Zepto
-Flipkart Minutes,Quick Commerce,Mar2026,snapshot,Dark Stores (count),800,count,analyst_estimate,S25,"Newer entrant, actively ramping — not a mature/stable network like the top 3"
-Flipkart Minutes,Quick Commerce,current,snapshot,Net Dark Store Adds per Month,100,count,analyst_estimate,S25,
-Flipkart Minutes,Quick Commerce,Jun2026_target,target,Cities Covered,250,count,disclosed,S25,"Stated target, not a current count"
-Amazon Now,Quick Commerce,stated_target,target,Micro-Fulfilment Centres (count),1000,count,disclosed,S25,"Stated as 'more than 1,000' — a forward plan, NOT a current operating count. Treated separately from current networks in the footprint chart below."
-Amazon Now,Quick Commerce,stated_target,target,Cities Covered,100,count,disclosed,S25,
+Flipkart Minutes,Quick Commerce,Q1CY26,snapshot,Dark Stores (count),800,count,analyst_estimate,S34,"Newer entrant, actively ramping — not a mature/stable network like the top 3"
+Flipkart Minutes,Quick Commerce,current,snapshot,Net Dark Store Adds per Month,100,count,analyst_estimate,S34,
+Flipkart Minutes,Quick Commerce,end2026_target,target,Dark Stores (count),1350,count,analyst_estimate,S34,"Stated target band 1,200-1,500 stores by end-2026 (midpoint shown); a forward plan, not a current count"
+Amazon Now,Quick Commerce,stated_target,target,Micro-Fulfilment Centres (count),1000,count,disclosed,S34,"Stated as 'more than 1,000' (from ~300), Rs 2,800cr investment — a forward plan, NOT a current operating count"
+Amazon Now,Quick Commerce,stated_target,target,Cities Covered,100,count,disclosed,S34,
+JioMart,Quick Commerce,Q3FY26,quarterly,Dark Stores (count),800,count,analyst_estimate,S35,"Reliance-backed entrant; ~1.6M orders/day (+53% QoQ), CFO claims contribution-margin positive on grocery-sourcing scale"

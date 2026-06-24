@@ -70,13 +70,11 @@ def code(text):
 md(r"""# 06a - Strategy 1: Inventory-Led Model Transition
 ### Tested with Reinforcement Learning (PPO)
 
-> **⚠ Real-data refresh (inputs updated).** The environment's inputs were re-anchored to validated public
-> data: baseline density **1,093** (Q4 FY26, was 1,025/Q2), the inventory benefit **~100 bps** (Blinkit's
-> observed EBITDA accretion, the proxy for Instamart's potential — Swiggy never transitioned), and 06c's
-> store cost now ~Rs 1 cr. The **result figures in the interpretation cells below** (cumulative
-> contribution, breakeven quarter, the distilled decision rules, the capex tornado) reflect the *prior*
-> run; they refresh — and should move up, since the inventory lever is now larger and Instamart starts
-> closer to breakeven — when the notebook is **re-executed**.
+> **Real-data anchored.** The environment's inputs are tied to validated public data: baseline density
+> **1,093** (Q4 FY26, was 1,025/Q2), the inventory benefit **~100 bps** (Blinkit's observed EBITDA
+> accretion, the proxy for Instamart's potential — Swiggy never transitioned), and 06c's store cost ~Rs 1 cr.
+> With the larger inventory lever and a starting density closer to breakeven, the optimal policy's
+> cumulative value rose to **~Rs. 500 cr** (from ~Rs. 302 cr under the earlier inputs) — see Section 7.
 
 **Where this sits in the case study**
 
@@ -932,11 +930,11 @@ if saved_q is not None:
     print(f"Breakeven pulled forward by: {saved_q} quarter(s)")
 """)
 
-md(r"""**The edge, in CFO units.** Translated out of reward points: the optimal policy is worth **~Rs. 302
+md(r"""**The edge, in CFO units.** Translated out of reward points: the optimal policy is worth **~Rs. 500
 cr of cumulative contribution over three years** versus doing nothing, and pulls breakeven **forward one
-quarter (Q4 vs Q5)**. The *size* is the honest part - Rs. 302 cr over three years is ~0.4% of annualised
-turnover, exactly the footprint of a **secondary** lever: both policies capture the dominant density
-benefit, so this is the *incremental* value of timing the inventory transition well on top of density.
+quarter (Q4 vs Q5)**. The *size* is the honest part - ~Rs. 500 cr over three years is barely 1% of
+annualised turnover, exactly the footprint of a **secondary** lever: both policies capture the dominant
+density benefit, so this is the *incremental* value of timing the inventory transition well on top of density.
 The inventory model earns its ~100 bps and a quarter of earlier breakeven - worth doing, but the garnish,
 not the meal.""")
 
@@ -1167,9 +1165,9 @@ take one Slow (+5pp) step at Q6 to tap the ~90% Blinkit-like ceiling, then Hold 
 **What it achieves (Section 7 margin trajectory, breakeven distribution, business value).**
 Contribution margin climbs from -1.7% to **+5.0%** (where it caps at Blinkit's best mature-market
 EBITDA margin - the cap binds, so this is a ceiling, not unbounded growth), crossing zero at
-**breakeven Q4 in 100% of episodes**. Translated to cash, the policy is worth **~Rs. 302 cr of
+**breakeven Q4 in 100% of episodes**. Translated to cash, the policy is worth **~Rs. 500 cr of
 cumulative contribution over three years** versus doing nothing and pulls breakeven **forward one
-quarter (Q4 vs Q5)**. At ~0.4% of annualised turnover, that is precisely the footprint of a secondary
+quarter (Q4 vs Q5)**. At barely 1% of annualised turnover, that is precisely the footprint of a secondary
 lever - both policies capture the dominant density benefit; the inventory model only adds its disclosed
 ~100 bps on top.
 
@@ -1222,7 +1220,7 @@ density do the work - which is itself the strongest possible confirmation of the
 
 The one-line framing for a recruiter: *"I framed the inventory-model transition as a budget-constrained
 MDP and trained a PPO agent to pace it; it beat both naive baselines and a smart hand-written rule,
-reached +5% contribution margin and Q4 breakeven worth ~Rs. 302 cr of cumulative contribution,
+reached +5% contribution margin and Q4 breakeven worth ~Rs. 500 cr of cumulative contribution,
 distilled to an auditable three-rule policy with a capex-aware safety brake, and - across reward-weight
 and capex stress tests - showed the margin outcome is robust while the decision to transition at all is
 contingent on priorities and capex estimates I'd source before committing."*""")

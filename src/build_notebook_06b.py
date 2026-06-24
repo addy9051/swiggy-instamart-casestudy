@@ -473,11 +473,11 @@ md(r"""**The prize, honestly sized.**
 
 | Outcome | P10 | P50 | P90 |
 |---|---|---|---|
-| Incremental MTU | 0.2M | **0.4M** | 0.6M |
-| Incremental annual GOV | Rs.603cr | **Rs.1,314cr** | Rs.2,040cr |
-| Incremental annual revenue | Rs.117cr | **Rs.257cr** | Rs.420cr |
+| Incremental MTU | 0.17M | **0.37M** | 0.58M |
+| Incremental annual GOV | Rs.576cr | **Rs.1,255cr** | Rs.1,948cr |
+| Incremental annual revenue | Rs.112cr | **Rs.246cr** | Rs.401cr |
 
-At P50 the cross-sell adds **~0.4M MTU and ~Rs.1,314cr GOV/year** - about 4% of Instamart's annualised
+At P50 the cross-sell adds **~0.37M MTU and ~Rs.1,255cr GOV/year** - about 4% of Instamart's annualised
 GOV. Meaningful but not transformative alone; its real strength is being *additive* and capex-light (no
 dark stores, no supply-chain change). The MTU histogram is nearly flat by design - incremental MTU
 scales linearly with a uniform conversion-rate draw, so it inherits that uniform shape; GOV is more
@@ -581,16 +581,16 @@ md(r"""**Is the prize worth the cost of winning it?**
 | Metric | P10 | P50 | P90 |
 |---|---|---|---|
 | Acquisition cost | Rs.5.6cr | Rs.9.1cr | Rs.14.2cr |
-| Year-1 net revenue | Rs.111cr | **Rs.247cr** | Rs.408cr |
-| Revenue-to-cost ratio | 17.9x | **26.4x** | 39.4x |
+| Year-1 net revenue | Rs.106cr | **Rs.246cr** | Rs.389cr |
+| Revenue-to-cost ratio | 17.1x | **25.2x** | 37.6x |
 
 **100% of simulations are revenue-positive** - the break-even line never touches the distribution. The
-~26x median ratio is high but exactly what a *cross*-sell should be: Swiggy already paid to acquire
+~25x median ratio is high but exactly what a *cross*-sell should be: Swiggy already paid to acquire
 these users into food delivery, so there is no top-of-funnel cost - only the price of a nudge. Even the
-pessimistic P10 returns ~18 rupees of first-year revenue per rupee spent.
+pessimistic P10 returns ~17 rupees of first-year revenue per rupee spent.
 
 *Framing caveat: this is a revenue-to-cost (CAC-efficiency) screen, not profit ROI. Instamart's
-contribution margin is still negative, so the Rs.247cr does not drop to the bottom line - it compounds
+contribution margin is still negative, so the Rs.246cr does not drop to the bottom line - it compounds
 the density lever. Profit payback is gated on the margin recovery modelled in 06a/06c.*""")
 
 # ---------------------------------------------------------------------------
@@ -668,8 +668,8 @@ plt.show()
 
 md(r"""**How deep should the campaign go?** Two questions: how much net revenue accrues with depth
 (left), and does efficiency collapse at the bottom (right). The answer to the second is *no* - and that
-is the finding. Marginal revenue-to-cost declines only gently across all ten deciles, **31.5x in
-decile 1 down to 23.3x in decile 10** - every decile clears break-even by a wide margin.
+is the finding. Marginal revenue-to-cost declines only gently across all ten deciles, **30.6x in
+decile 1 down to 22.6x in decile 10** - every decile clears break-even by a wide margin.
 
 So there is **no targeting cutoff** below which the campaign stops being worth running. The right
 question is not "how deep?" but "how much budget?" - and the model's job is to ensure that budget
@@ -739,10 +739,10 @@ either way, identical cost), the only thing that changes is *who* gets contacted
 
 | Policy | Avg uplift per targeted user | Median incremental revenue |
 |---|---|---|
-| Random targeting (no model) | 0.166 | Rs.140cr |
-| Uplift-model targeting | 0.211 | **Rs.178cr** |
+| Random targeting (no model) | 0.166 | Rs.134cr |
+| Uplift-model targeting | 0.211 | **Rs.170cr** |
 
-**Smart targeting delivers +27% incremental revenue (~Rs.38cr/year) for the same spend.** The two
+**Smart targeting delivers +27% incremental revenue (~Rs.36cr/year) for the same spend.** The two
 distributions clearly separate, so the gap is robust across the AOV/take-rate uncertainty, not one
 lucky draw. The +27% is meaningful but bounded - consistent with the gradual uplift curve: the model
 earns its keep as an efficiency multiplier, but the strategy's value comes mainly from the prize being
@@ -831,17 +831,17 @@ md(r"""## 10. Verdict and honest limitations
   — **order frequency and grocery-affinity (cuisine_home) are the two dominant drivers (~50% of
   importance combined)**, then Swiggy One membership and metro location. The CRM-ready target profile:
   high-frequency, home-cuisine-skewed Swiggy One members in metros.
-- **The prize is real but not transformative alone.** P50 of **~0.4M incremental MTU and ~Rs.1,314cr
-  GOV/year** (P10–P90: Rs.600cr–2,000cr), ~4% of Instamart's annualised GOV.
+- **The prize is real but not transformative alone.** P50 of **~0.37M incremental MTU and ~Rs.1,255cr
+  GOV/year** (P10–P90: Rs.576cr–1,948cr), ~4% of Instamart's annualised GOV.
 - **The economics are strongly positive.** Net of acquisition cost the lever is **revenue-positive in
-  ~100% of simulations**, P50 **~Rs.247cr net revenue** at a **~26x first-year revenue-to-cost** ratio
+  ~100% of simulations**, P50 **~Rs.246cr net revenue** at a **~25x first-year revenue-to-cost** ratio
   — eye-popping, but exactly what a *cross*-sell should be: Swiggy already owns these users, so there is
   no top-of-funnel acquisition cost, only the price of a nudge.
 - **The model pays for itself.** At a fixed campaign size, uplift-model targeting delivers **+27%
-  incremental revenue (~Rs.38cr/yr) over a random mass campaign of identical cost** — the monetised
+  incremental revenue (~Rs.36cr/yr) over a random mass campaign of identical cost** — the monetised
   value of the data science itself.
 - **Depth is a budget question, not a targeting one.** Every CATE decile clears break-even
-  (marginal rev-to-cost 31.5x at the top, still 23.3x at the bottom), so spend as much budget as is
+  (marginal rev-to-cost 30.6x at the top, still 22.6x at the bottom), so spend as much budget as is
   available, top-down — the model just ensures it reaches the most responsive users first.
 - **The next step is small and specific.** Detecting a +3pp lift over the 4% organic baseline at 80%
   power needs **~1,800 users (0.06% of the eligible pool)** — a 4–6 week A/B test, not a big commitment.
@@ -890,7 +890,7 @@ md(r"""## Glossary
 | **Quick Commerce** | Q-Commerce | Grocery and essentials delivery with a sub-30-minute promise, fulfilled from dark stores within a hyperlocal radius (~2–3 km). Distinct from traditional e-commerce (1–2 day delivery) and food delivery (restaurant meals). |
 | **Inventory-led Model** | — | The platform buys and holds inventory itself (like a retailer), so it controls pricing, stocking, and margin. Blinkit's model: 90% inventory-led. Margin benefit is the disclosed 60 bps over a full transition. |
 | **Marketplace Model** | — | The platform acts as an intermediary — merchants list products and the platform earns a commission. Instamart's current model (~90% marketplace). Lower capital intensity but smaller margin ceiling. |
-| **Density** | Orders per Store per Day | How productively each dark store is used. The central economic variable in this case study: higher density spreads fixed store costs over more orders, directly improving contribution margin. Instamart: ~1,025; Blinkit: ~1,337; Zepto: ~2,140. |
+| **Density** | Orders per Store per Day | How productively each dark store is used. The central economic variable in this case study: higher density spreads fixed store costs over more orders, directly improving contribution margin. Instamart: ~1,093 (Q4 FY26); Blinkit: ~1,425; Zepto: ~2,045. |
 | **CAC** | Customer Acquisition Cost | The total cost of acquiring one new user — here, the contact cost (paid on everyone nudged) plus the incentive/voucher cost (paid on those who convert). A campaign is only worth running if the value an acquired user generates exceeds their CAC. |
 | **ROI / Rev-to-Cost** | Return on Investment | The ratio of value generated to money spent. In Section 7 we report first-year *revenue*-to-cost (a CAC-efficiency screen), not profit ROI — Instamart's contribution margin is still negative, so true profit payback is longer and depends on the density-driven margin recovery (06a/06c). |
 

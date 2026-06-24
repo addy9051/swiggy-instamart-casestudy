@@ -1,9 +1,9 @@
 hypothesis_id,hypothesis,verdict,evidence
-H2.1,Instamart leads on AOV — a durable margin advantage,Supported,"₹700 vs ₹525 (Blinkit) vs ₹387 (Zepto), all disclosed/near-disclosed"
-H2.2,"Instamart's deficit is frequency/MTU, not basket size",Directionally supported (estimate-dependent),13.3M vs Blinkit's estimated 27.2M MTU
+H2.1,Instamart leads on AOV — a durable margin advantage,Supported (gross basis),"Gross AOV ₹700 vs ₹525 (Blinkit, net) vs ₹387 (Zepto); net-to-net the lead narrows (~₹485 vs ₹525)"
+H2.2,"Instamart's deficit is frequency/MTU, not basket size",Supported,13.3M vs Blinkit's 27.2M MTU — both now disclosed (Eternal Q4FY26 letter)
 H2.3,Non-grocery mix expansion raises AOV/margin per order,Directionally supported,"Both series rose together; only 2 time points, no causal proof"
 H2.4,Reduced promo intensity traded volume for economics,Supported,First-ever sequential GOV decline (-0.7%) alongside +65bps margin gain
-H5.1,Advertising is currently driving take-rate expansion,Not supported by latest data,Take rate fell 21.1% -> 19.2% QoQ per JM Financial
-H5.2,"Instamart's ad revenue lags peers, leaving headroom",Supported + meta-finding,"Zepto discloses ₹1,636cr; Instamart doesn't disclose at all"
-H5.3,Take rate trails Blinkit's 20-22% guidance band,Supported,"19.2% and falling, vs the stated band"
+H5.1,Advertising is currently driving take-rate expansion,Not supported,"QC take rate softened 21.1% -> 19.2% then stabilised ~19.5% (JM Financial) — flat-to-down, not expanding"
+H5.2,"Instamart's ad revenue lags peers, leaving headroom",Supported + meta-finding,"Only Zepto discloses (₹1,636cr); Blinkit's absolute ad revenue is NOT disclosed either; Instamart's not disclosed at all"
+H5.3,Take rate trails Blinkit's 20-22% guidance band,Supported,"~19.5% latest (analyst est.), below the stated 20-22% band"
 H5.4,Non-grocery/private-label mix lifts ad + product margin,"Partially supported (inferred, not directly tested)",No public data isolates ad-margin contribution specifically

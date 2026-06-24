@@ -1,5 +1,5 @@
 hypothesis_id,hypothesis,verdict,evidence
 H3.1,Instamart losing share of incremental category growth,Strongly supported,"Order share fell 34.3% -> 24.5% -> 20.9%, FY24-FY26 (Zepto UDRHP)"
 H3.2,Metro saturation caps orders/store and AOV via demand-splitting,Not separately testable,Same underlying phenomenon as H3.1/H3.4 — no independent data
-H3.3,"New entrants (Amazon Now, Flipkart Minutes) fragmenting demand",Supported,"Flipkart Minutes ~800 stores, +~100/month; Amazon targeting 100 cities, 1,000+ MFCs"
+H3.3,"New entrants (Amazon Now, Flipkart Minutes) fragmenting demand",Supported,"Flipkart Minutes ~800 stores, +~100/month (target 1,200-1,500 by end-2026); Amazon targeting 100 cities, 1,000+ MFCs; JioMart ~1.6M orders/day (+53% QoQ), CM-positive claim"
 H3.4,Zepto's higher throughput despite lower AOV proves frequency beats ticket size,Partially supported / overstated,"Zepto's density lead hasn't produced better unit economics than Instamart's — Blinkit's model, not density, looks decisive"

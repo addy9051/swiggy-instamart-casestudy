@@ -1,10 +1,10 @@
 branch,hypothesis_id,hypothesis,verdict,evidence
-Branch 1 - Unit Economics & Density,H1.1,Network density materially below breakeven/ceiling,Supported,"Disclosed: 1,025 vs. stated 2,000+ ceiling (51% utilization)"
+Branch 1 - Unit Economics & Density,H1.1,Network density materially below breakeven/ceiling,Supported,"Disclosed: 1,093 OPD (Q4 FY26) vs. stated 2,000+ ceiling (~55% utilization)"
 Branch 1 - Unit Economics & Density,H1.2,Loss concentrated in a minority of stores,Supported,Disclosed: only ~25% of stores profitable as of Q2 FY26
 Branch 1 - Unit Economics & Density,H1.3,"New stores take 6-12mo to mature, dragging blended margin",Inconclusive — not testable,No public store-cohort/vintage data available
 Branch 1 - Unit Economics & Density,H1.4,Megapods improve throughput/margin via SKU breadth,"Directionally supportive, quantitatively thin","Qualitative only — SKU count, ~50% of net adds"
 Branch 1 - Unit Economics & Density,Cross-player regression (n=3),Density alone explains the margin gap across companies,Weak/inconclusive,"Zepto: highest density, near-worst loss. Blinkit: mid density, best loss by far — business model likely dominates"
-Branch 1 - Unit Economics & Density,Simulated store-level regression,Density predicts margin within a single network,Methodology demonstrated on calibrated proxy data,"R²=0.41 on n=1143 simulated stores; breakeven ≈ 1,552 orders/day"
+Branch 1 - Unit Economics & Density,Simulated store-level regression,Density predicts margin within a single network,Methodology demonstrated on calibrated proxy data,"R²=0.41 on n=1143 simulated stores; regression x-intercept ≈1,552 OPD — overstates the ~1,225 real-data breakeven (Redseer)"
 Branch 2 & 5 - Customer Behavior & Monetization,H2.1,Instamart leads on AOV — a durable margin advantage,Supported,"₹700 vs ₹525 (Blinkit) vs ₹387 (Zepto), all disclosed/near-disclosed"
 Branch 2 & 5 - Customer Behavior & Monetization,H2.2,"Instamart's deficit is frequency/MTU, not basket size",Directionally supported (estimate-dependent),13.3M vs Blinkit's estimated 27.2M MTU
 Branch 2 & 5 - Customer Behavior & Monetization,H2.3,Non-grocery mix expansion raises AOV/margin per order,Directionally supported,"Both series rose together; only 2 time points, no causal proof"

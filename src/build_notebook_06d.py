@@ -83,20 +83,25 @@ RNG_SEED = 42
 # ---------------------------------------------------------------------------
 md(r"""## 1. The headline, reconciled: the inventory vote is *not* the big lever
 
-The diagnostic deck frames the failed inventory-model governance vote as *"the single highest-leverage
+The diagnostic deck frames the failed inventory-model IOCC/ownership vote as *"the single highest-leverage
 fix."* The simulations say otherwise, and this notebook sides with the simulations:
 
 - The inventory model is worth **~100 bps (~1.0 pp)** of margin - and note the provenance correction the
   real-data check forced: this is **Blinkit's *observed* benefit** (Eternal CFO: ~100 bps EBITDA accretion
   + ~300 bps gross-margin lift), used as the proxy for Instamart's potential, because **Swiggy never
-  actually transitioned** (the IOCC vote failed). 06a also finds the decision to transition *flips to
-  "don't"* under plausible costs or a share-over-margin priority. It is **secondary and contingent**.
+  actually transitioned**. And the reason it hasn't is **regulatory, not economic**: India's FDI rules bar
+  foreign-funded firms from the inventory-led model (only the marketplace model is open to 100% FDI), so
+  Instamart's entity must first become **Indian-Owned-and-Controlled (IOCC)** - and the special resolution
+  to enable that **failed at 72.35% vs the 75% needed** (Blinkit can run inventory-led only because Eternal
+  restructured to IOCC). 06a also finds the decision to transition *flips to "don't"* under plausible costs
+  or a share-over-margin priority. It is **secondary, contingent, and ownership-gated**.
 - The **density** lever, by contrast, is worth **several percentage points** over the horizon (06c's
   envelope has hold reaching ~+4.7%) - roughly **four times** the inventory lever, with no capex and no
-  shareholder vote required.
+  ownership/FDI restructuring required.
 
-Leading with the vote isn't wrong, but it's a *narrative* lever (it's a single dramatic number), not the
-*economic* one. A senior reader will catch the inconsistency, so we surface it rather than bury it.
+Leading with the vote isn't wrong, but it's a *narrative* lever (a single dramatic number, and one that's
+really a Branch-6 ownership question), not the *economic* one. A senior reader will catch the
+inconsistency, so we surface it rather than bury it.
 """)
 
 code(r"""
@@ -129,7 +134,8 @@ md(r"""## 2. The integrated recommendation: sequenced and capital-allocated
 The dependency structure implies an order, and the magnitudes imply where the money goes. Run the
 cheap, dominant, fully-controllable lever first; use the margin and order volume it buys to unlock the
 harder, smaller, blocked one last. The Rs 4,475 cr QIP earmark is allocated to match - and deliberately
-holds the inventory tranche back until its preconditions (a cost quote and the vote) are met.
+holds the inventory tranche back until its preconditions (a real cost quote and the IOCC/ownership
+restructuring the FDI rules require) are met.
 """)
 
 code(r"""
@@ -142,7 +148,8 @@ allocation = pd.DataFrame([
          "Released in full only after the Section-3 pilot clears its bar."),
     dict(Phase="Q4+",  Bet="S1 - Inventory model (conditional)",
          Capital_Rs_cr=1000, Logic="HELD. Released only if (a) a real transition-cost quote clears the "
-         "06a hurdle and (b) the shareholder vote passes. Otherwise redeployed to density."),
+         "06a hurdle and (b) the entity can clear the IOCC/FDI ownership bar the failed vote was meant to "
+         "enable. Otherwise redeployed to density."),
     dict(Phase="-",    Bet="Reserve / optionality",
          Capital_Rs_cr=2975, Logic="Kept liquid for competitive response (Section 4) and to double down "
          "on whichever bet's leading indicators (Section 3) come in strongest."),
@@ -211,9 +218,9 @@ bets = pd.DataFrame([
          Go_if="Lift >= +3pp over the ~4% organic baseline (06b's bankable threshold)",
          Kill_if="Lift < +3pp -> the prize slides to the pessimistic tail; stop scaling, don't fund it"),
     dict(Bet="S1 Inventory",
-         Leading_indicator="Real transition-cost quote (Rs/5pp) + vote whip count",
-         Go_if="Cost <= ~Rs 80cr/5pp AND margin is the board's priority AND vote can clear 75%",
-         Kill_if="Cost high OR share is prioritised OR vote fails -> redeploy the tranche to density"),
+         Leading_indicator="Real transition-cost quote (Rs/5pp) + IOCC/ownership-restructuring path",
+         Go_if="Cost <= ~Rs 80cr/5pp AND margin is the board's priority AND entity can reach IOCC (FDI bar cleared)",
+         Kill_if="Cost high OR share is prioritised OR IOCC/FDI path blocked -> redeploy the tranche to density"),
 ])
 bets.set_index("Bet")
 """)
@@ -409,9 +416,10 @@ md(r"""## 9. Verdict and honest limitations
 
 **The decision.** Spend first on **density** (dominant, cheap, controllable), use **cross-sell** to feed
 it (capex-light, gated on a pilot), and treat the **inventory model** as a conditional, secondary bet -
-released only if a real cost quote and the shareholder vote both clear. Hold the rest of the QIP earmark
-as optionality for competitive response. This overrules the deck's "inventory vote is the big unlock"
-framing: the vote is the dramatic number, density is the economic one.
+released only if a real cost quote clears *and* the entity can reach IOCC status (the FDI/ownership bar
+the failed vote was meant to clear). Hold the rest of the QIP earmark as optionality for competitive
+response. This overrules the deck's "inventory vote is the big unlock" framing: the vote is the dramatic
+number (and really an ownership/FDI question), density is the economic one.
 
 **What changed because of this synthesis (not just confirmation):**
 

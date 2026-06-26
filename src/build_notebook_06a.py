@@ -89,10 +89,12 @@ Notebooks 01-05 *diagnosed* why Instamart's path to profitability lags Blinkit. 
 **The question this notebook answers**
 
 Branch 4 (logistics) found that 90% of Blinkit's NOV runs through an inventory-led model worth a
-disclosed **~100 bps** of EBITDA accretion (Eternal CFO; ~300 bps gross-margin lift), and that Swiggy's
-own shareholder vote to adopt the same model *failed by 2.65 pp* (72.35% vs. the 75% needed) - so Swiggy
-has *not* transitioned, and this benefit is Blinkit's observed figure used as Instamart's proxy. The
-lever exists and is proven by a competitor. The open question is one of **pace and sequencing**: if Swiggy did get to transition,
+disclosed **~100 bps** of EBITDA accretion (Eternal CFO; ~300 bps gross-margin lift). But Instamart
+can't simply copy it: India's **FDI rules bar foreign-funded firms from the inventory-led model**, so
+its entity must first become **Indian-Owned-and-Controlled (IOCC)** - and Swiggy's special resolution to
+enable that *failed by 2.65 pp* (72.35% vs. the 75% needed). So Swiggy has *not* transitioned (Blinkit
+can run inventory-led only because Eternal restructured to IOCC), and this benefit is Blinkit's observed
+figure used as Instamart's proxy. The lever is proven by a competitor but gated by ownership/FDI law. The open question is one of **pace and sequencing**: if Swiggy did get to transition,
 how aggressively should it push the inventory-led share each quarter, given that the transition
 costs capex, and that same capex is also what funds the density growth that drives the *larger*
 share of the margin gap?
@@ -1214,9 +1216,12 @@ density do the work - which is itself the strongest possible confirmation of the
    not "margin grows without limit."
 4. **Market-share dynamics are weak by construction** - share barely responds to density over this
    horizon, so the share-related conclusions are directional only.
-5. **The 75% shareholder-vote gate is treated as already resolved**, and **real transitions involve
-   supplier contracts, warehouse build-out, and cold-chain logistics** abstracted here into a single
-   capex cost and war chest.
+5. **The FDI/ownership gate is treated as already resolved.** In reality the inventory-led model is
+   *barred for foreign-funded firms* under India's FDI rules, so Instamart's entity must first become
+   **Indian-Owned-and-Controlled (IOCC)** - and Swiggy's special resolution to enable that failed at
+   72.35% vs the 75% needed. This is a Branch-6 ownership precondition, not a capex decision, and it sits
+   *upstream* of everything this notebook models. **Real transitions also involve supplier contracts,
+   warehouse build-out, and cold-chain logistics** abstracted here into a single capex cost and war chest.
 
 The one-line framing for a recruiter: *"I framed the inventory-model transition as a budget-constrained
 MDP and trained a PPO agent to pace it; it beat both naive baselines and a smart hand-written rule,

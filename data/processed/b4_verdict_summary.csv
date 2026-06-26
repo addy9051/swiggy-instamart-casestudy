@@ -1,5 +1,5 @@
 hypothesis_id,hypothesis,verdict,evidence
 H4.1,Last-mile cost is large and density-sensitive,"Directionally supported (single company, 2 points)","Blinkit ₹55/order, -14% YoY; no Instamart/Zepto comparator exists"
 H4.2,Tier-2 expansion raises blended delivery cost,Not independently testable,No public city-tier cost breakdown for any player
-H4.3,Marketplace model prevents Instamart from matching Blinkit's replenishment efficiency,Supported (but a secondary lever),"90% Blinkit inventory-led NOV; ~100bps EBITDA accretion + ~300bps gross-margin lift (Blinkit-observed, Eternal CFO); Swiggy's IOCC vote to follow fell 2.65pp short of 75%. Simulations (06a/06d) rate it secondary to density"
+H4.3,Marketplace model prevents Instamart from matching Blinkit's replenishment efficiency,"Supported (regulation-gated, secondary lever)","Blocked for Instamart by FDI rules (needs IOCC); enabling vote fell 2.65pp short of 75%. 90% Blinkit inventory-led NOV, ~100bps EBITDA. Secondary to density (06a/06d)"
 H4.4,Rider/regulatory cost inflation is a forward risk,Not testable retrospectively,"Forward-looking policy risk by construction, not a backward-looking metric"

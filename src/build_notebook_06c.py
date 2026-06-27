@@ -138,7 +138,7 @@ SD = dict(
     capex_per_store   = 1.0,      # DV - Rs.cr to build one dark store (Blinkit-implied; was 3.5, which
                                   #      conflated inventory working capital + multi-year lease)
     regen_scale       = 10000.0,  # E  - scaled proxy: positive margin -> capex regeneration
-    blinkit_density   = lookup("Blinkit", "Orders per Store per Day", 1425),       # DV - reference only
+    blinkit_density   = lookup("Blinkit", "Orders per Store per Day", 1357),       # DV - reference only
     # --- Strategy levers ---
     aggressive_adds_qtr = 60.0,   # E  - current-pace expansion
     hold_adds_qtr       = 5.0,    # E  - maintenance only

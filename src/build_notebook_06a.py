@@ -241,7 +241,7 @@ BASELINE = {
     "nov_cr":                 lookup("Swiggy Instamart", "NOV", 5675, period="Q4FY26"),             # D  - Q4 FY26, drives operating cash flow
     "capex_reserve_cr":       lookup("Swiggy Instamart", "Capex Allocated from QIP", 4475),         # D  - QIP earmark, the transition war chest
     # -- Blinkit reference figures ---------------------------------------------------------
-    "blinkit_density":        lookup("Blinkit", "Orders per Store per Day", 1425),                   # DV - Q4 FY26, derived from Eternal letter
+    "blinkit_density":        lookup("Blinkit", "Orders per Store per Day", 1357),                   # DV - Q4 FY26, derived from Eternal letter
     "blinkit_market_share":   lookup("Blinkit", "Market Share", 46.0) / 100.0,                       # E  - S23
     "blinkit_inventory_led":  lookup("Blinkit", "Inventory-led NOV Share", 90.0) / 100.0,            # D  - the 90% transition ceiling
     "margin_cap":             lookup("Blinkit", "Mature Market EBITDA Margin (Gurgaon/Noida)",

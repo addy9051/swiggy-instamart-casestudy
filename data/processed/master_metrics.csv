@@ -67,7 +67,7 @@ row_id,company,segment,period,period_type,metric,value,unit,yoy_pct,qoq_pct,conf
 67,Blinkit,Quick Commerce,FY26,annual,Revenue from Operations,37779.0,INR_crore,,,disclosed,S14,Inventory-led model inflates this vs marketplace-model peers — NOT comparable to Swiggy/Zepto revenue without adjustment
 68,Blinkit,Quick Commerce,current,snapshot,Mature Market EBITDA Margin (Delhi NCR aggregate),3.5,percent,,,disclosed,S15,
 69,Blinkit,Quick Commerce,current,snapshot,Mature Market EBITDA Margin (Gurgaon/Noida),5.0,percent,,,disclosed,S15,
-70,Blinkit,Quick Commerce,Q4FY26,quarterly,Orders per Store per Day,1425.0,orders,,,derived,S27,"Q4 exit: ~273.9M quarterly orders / ~2,135 avg stores / 90 days (Eternal Q4FY26 letter). Supersedes earlier 1,337 Nomura-relative estimate (S20)"
+70,Blinkit,Quick Commerce,Q4FY26,quarterly,Orders per Store per Day,1357.0,orders,,,derived,S27,"Reported (closing-capacity basis): ~273.9M quarterly orders / 90 days / ~2,243 CLOSING stores = ~1,357. On an active-store-days basis (~2,135 avg active, excl. the 216 stores added mid-quarter) it would be ~1,425 - Blinkit headlines the conservative 1,357. NB: Zepto headlines its ACTIVE-basis figure (2,140), so the two are not strictly comparable (see row 78)"
 71,Zepto,Quick Commerce,FY25,annual,Revenue,11110.0,INR_crore,,,disclosed,S19,
 72,Zepto,Quick Commerce,Jan2026,snapshot,Market Share,22.0,percent,,,analyst_estimate,S23,
 73,Zepto,Quick Commerce,Q4FY26,quarterly,NRV,8134.0,INR_crore,73.0,28.0,disclosed,S19,
@@ -75,7 +75,7 @@ row_id,company,segment,period,period_type,metric,value,unit,yoy_pct,qoq_pct,conf
 75,Zepto,Quick Commerce,FY26,annual,Orders (Full Year),640.0,million,,,disclosed,S19,
 76,Zepto,Quick Commerce,FY25,annual,Orders (Full Year),332.0,million,,,disclosed,S19,
 77,Zepto,Quick Commerce,current,snapshot,AOV,387.0,INR,,,disclosed,S19,
-78,Zepto,Quick Commerce,Q4FY26,quarterly,Orders per Store per Day,2045.0,orders,,,derived,S39,"~23.3 lakh orders/day / ~1,139 stores (Zepto UDRHP via Inc42). Supersedes earlier 2,140 estimate (S20)"
+78,Zepto,Quick Commerce,Q4FY26,quarterly,Orders per Store per Day,2140.0,orders,,,derived,"S19,S39,S20","~2,140 on the operational darkstore-days basis: ~23.3 lakh orders/day / ~1,088 avg ACTIVE stores in Q4 (newest stores ramped late), the basis Zepto UDRHP/audited store-productivity uses. Corroborated by Nomura (S20). Our earlier 2,045 divided by the 1,139 CLOSING store count, understating productivity and inconsistent with Blinkit avg-store derivation (row 70)"
 79,Zepto,Quick Commerce,FY26,annual,Per Order Loss,78.75,INR,,,analyst_estimate,"S21,S22",
 80,Zepto,Quick Commerce,FY26,annual,Advertising Revenue,1636.0,INR_crore,,,disclosed,S19,~7.9% of NRV
 81,Top3 Aggregate,Market Structure,FY24,annual,Instamart Order Share (of Top 3),34.3,percent,,,disclosed,S19,

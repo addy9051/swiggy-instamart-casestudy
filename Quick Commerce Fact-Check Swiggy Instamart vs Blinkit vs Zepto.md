@@ -1,0 +1,138 @@
+# Quick Commerce Fact-Check: Swiggy Instamart vs Blinkit vs Zepto (FY26)
+
+## TL;DR
+- The large majority of the "current values" in the brief are **confirmed verbatim by primary filings** — Swiggy's Q4 FY26 shareholder letter, Eternal's Q4 FY26 letter, and Zepto's UDRHP. The headline market-share split (Blinkit 46% / Instamart 24% / Zepto 22% / Others) traces to **Datum Intelligence (founder Satish Meena) data cited by Reuters in January 2026** — it is a credible secondary estimate, not a company disclosure.
+- The most important **contradictions** to fix before modeling: dark-store capex (₹3.5cr/store is far too high — disclosed Blinkit economics imply ~₹1cr/store), the inventory-model margin benefit (Eternal states ~**100 bps** EBITDA accretion + ~300 bps gross-margin lift, not 60 bps), QC breakeven density (Redseer cites **~1,200–1,250**, not 1,552), Instamart orders/store/day (Q4 FY26 = **1,093**, the 1,025 figure was Q2 FY26), and the Swiggy food-delivery take rate (~23% per analysts, not 25.8%).
+- The **genuinely unsourced** figures remain: food→QC cross-sell conversion (both Swiggy and Eternal explicitly call this "sensitive" and do not disclose), Blinkit's absolute advertising revenue (Eternal does not break it out), food-delivery AOV, and new-store starting density.
+
+## Key Findings
+
+| Figure | Current value | Found value | Source name | URL | Date | Primary/Secondary | Verdict |
+|---|---|---|---|---|---|---|---|
+| 1. QC market share Jan 2026 | Blinkit 46 / Instamart 24 / Zepto 22 / Others 8 | Blinkit 46%, Instamart 24%, Zepto 22%, BigBasket 5-7% — Datum Intelligence data (founder Satish Meena) cited by Reuters Jan 2026 | StartupFeed (citing Datum/Reuters) | https://startupfeed.in/quick-commerce-war-2026-blinkit-zepto-instamart-amazon-flipkart/ | 2026 | Secondary | CONFIRMS |
+| 1b. Market-share variance | — | Blinkit ~48% (Reuters via Datum, start-2026); BofA Research >50%; Zepto UDRHP self-claim 29% | Quash; Mordor Intelligence | https://quashbugs.com/blog/blinkit-surpasses-zomato-in-quick-commerce | 2026 | Secondary | REFINES |
+| 2. Dark stores Instamart | 1,143 | 1,143 across 129 cities (7 net adds in Q4) | Swiggy Q4 FY26 Shareholder Letter | https://www.swiggy.com/corporate/wp-content/uploads/2026/05/Q4-FY2026-Shareholder-letter.pdf | May 2026 | Primary | CONFIRMS |
+| 2b. Dark stores Blinkit | 2,243 | 2,243 (216 net adds in Q4) | Eternal Q4 FY26 Shareholder Letter | https://b.zmtcdn.com/investor-relations/Eternal_Limited_Shareholders_Letter_Q4FY26_Results.pdf | Apr 2026 | Primary | CONFIRMS |
+| 3. Orders/store/day Instamart | 1,025 | **1,093 (Q4 FY26)**; 1,025 was Q2 FY26 | Swiggy Q4 FY26 Shareholder Letter | (same as #2) | May 2026 | Primary | REFINES |
+| 3b. Orders/store/day Blinkit | ~1,337 | ~1,425 at Q4 exit (273.9M ÷ ~2,135 avg stores ÷ 90 days); ~370k/store/yr annual | Derived from Eternal letter; Mint | https://finance.biggo.com/news/_Rmiq54B6tLPsnrZixx5 | 2026 | Derived/Secondary | REFINES |
+| 3c. Orders/store/day Zepto | ~2,140 | ~2,045 Q4 (23.3 lakh/day ÷ 1,139 stores); ~560k/store/yr annual | Inc42 / Mint (Zepto UDRHP) | https://inc42.com/features/zeptos-battle-beyond-speed/ | 2026 | Derived/Secondary | REFINES |
+| 4. AOV Instamart | ₹700 | ₹700 gross AOV (net AOV ~₹485) | Swiggy Q4 FY26 Shareholder Letter | (same as #2) | May 2026 | Primary | CONFIRMS |
+| 4b. AOV Blinkit | ₹525 | Net AOV ₹525 (gross ~₹665-669) | Entrackr (citing Eternal letter) | https://entrackr.com/analysis/eternals-reality-check-blinkits-thin-margins-and-districts-losses-11777148 | 2026 | Secondary | CONFIRMS |
+| 4c. AOV Zepto | ₹387 | ~₹387 implied (NOT disclosed in DRHP; EDLP model) | Inc42 | https://inc42.com/features/zeptos-battle-beyond-speed/ | 2026 | Derived/Secondary | CONFIRMS |
+| 5. MTU Instamart (QC) | 13.3M | 13.3M | Swiggy Q4 FY26 Shareholder Letter | (same as #2) | May 2026 | Primary | CONFIRMS |
+| 5b. MTU Blinkit | ~27.2M | 27.2M monthly transacting customers | Eternal Q4 FY26 / Ziro | https://www.ziromarket.com/blog/eternal-zomato-blinkit-q4-fy26-results | Apr 2026 | Primary/Secondary | CONFIRMS |
+| 5c. MTU Swiggy food | 18.3M | 18.3M | Swiggy Q4 FY26 Shareholder Letter | (same as #2) | May 2026 | Primary | CONFIRMS |
+| 6. Per-order loss Instamart | ₹85.18 | ₹85.18 (FY26 adj-EBITDA loss/order) | INDmoney | https://www.indmoney.com/blog/stocks/zepto-blinkit-instamart-loss-per-order-profitability | 2026 | Secondary/Derived | CONFIRMS |
+| 6b. Per-order loss Blinkit | ₹3.02 | ₹3.02 (FY26) | INDmoney | (same as #6) | 2026 | Secondary/Derived | CONFIRMS |
+| 6c. Per-order loss Zepto | ₹78.75 | ₹78.75 FY26 (from ₹136.15 FY25) | Zepto UDRHP via Angel One | https://www.angelone.in/news/ipos/zepto-ipo-comparing-zepto-with-blinkit-and-swiggy-instamart-on-orders-revenue-and-profitability | 2026 | Primary(DRHP)/Secondary | CONFIRMS |
+| 7. Instamart Q4 GOV/NOV/CM | ₹7,881cr / ₹5,675cr / -1.8% | GOV ₹7,881cr, NOV ₹5,675cr, CM -1.8% (Mar-26 monthly -1.1%) | Swiggy Q4 FY26 Shareholder Letter | (same as #2) | May 2026 | Primary | CONFIRMS |
+| 8. Blinkit Q4 NOV/EBITDA | ₹14,386cr / +₹37cr | NOV ₹14,386cr, adj EBITDA +₹37cr (0.3% of NOV) | Eternal Q4 FY26 Shareholder Letter | (same as #2b) | Apr 2026 | Primary | CONFIRMS |
+| 9. Instamart order share top-3 | 34.3 → 24.5 → 20.9% | FY24 34.3% → FY25 24.5% → FY26 20.9% | Zepto UDRHP via Entrackr | https://entrackr.com/analysis/instamarts-share-among-top-q-comm-players-drops-from-34-to-21-in-2-years-12018833 | 2026 | Primary(DRHP)/Secondary | CONFIRMS |
+| 10. Blinkit inventory-led NOV % | 90% | ~90% of NOV on own inventory (Q3 FY26) | Inc42 (citing Eternal letter) | https://inc42.com/buzz/eternal-q3-blinkit-hyperpure-achieve-adjusted-ebitda-profitability/ | Jan 2026 | Primary/Secondary | CONFIRMS |
+| 11. Inventory-model margin benefit | ~60 bps (CFO 50-70) | **~1 ppt (≈100 bps) EBITDA accretion**, >half captured by Q3 FY26; **~300 bps gross-margin lift** | MediaNama (Eternal CFO Akshant Goyal, Q2 FY26 call) | https://www.medianama.com/2025/10/223-blinkit-eternal-q2fy26-growth-zomato-food-delivery/ | Oct 2025 | Secondary | CONTRADICTS |
+| 12. Dark-store capex/store | ₹3.5cr | **Blinkit ~₹1cr/store** capex (₹26cr NOV/yr, ~40% ROCE); setup ₹20-50 lakh; ₹370cr capex for 368 stores | Investyadnya; Outlook (Zomato filings) | https://shop.investyadnya.in/blogs/market-trends/blinkit-vs-d-mart-how-quick-commerce-is-disrupting-india-s-retail-empire | 2025-26 | Secondary | CONTRADICTS |
+| 13. Swiggy QIP / Instamart earmark | ₹10,000cr / ₹4,475cr | ₹10,000cr raised (26.67cr shares @ ₹375); ₹4,475cr to QC fulfilment | MediaNama (regulatory filing) | https://www.medianama.com/2025/12/223-swiggy-half-10000-cr-qip-quick-commerce/ | Dec 2025 | Primary/Secondary | CONFIRMS |
+| 14. IOCC vote | 72.35% vs 75% needed | **72.36%** in favour (Swiggy spokesperson cited 72.35%), short of 75% by 2.65%; postal ballot Apr 21–May 20, 2026 | Outlook Business / Swiggy SEBI filing | https://www.outlookbusiness.com/corporate/swiggy-misses-threshold-in-bid-to-become-indian-owned-company | May 2026 | Primary/Secondary | CONFIRMS |
+| 15. FD→QC cross-sell rate | 8-25% (unsourced) | **No public figure** — both call it "sensitive"; BofA Nov-25 survey: 20% use both *food* apps (NOT food→grocery cross-sell) | Swiggy Q2 FY26 call; BofA survey via Business Standard | https://www.business-standard.com/industry/news/blinkit-tops-qcom-charts-swiggy-takes-lead-in-food-delivery-bofa-survey-125112501035_1.html | 2025-26 | Primary/Secondary | NO DATA FOUND |
+| 16. Instamart take rate | ~19.2% (JM Financial) | JM Financial est **19.5% on NOV** (Q4 FY26); Motilal Oswal 12.8% on GOV | Business Standard (Swiggy Q4 preview) | https://www.business-standard.com/markets/news/swiggy-share-price-nse-bse-q4-results-profit-revenue-food-delivery-quick-commerce-nov-gov-gmv-nmv-instamart-126050500152_1.html | May 2026 | Secondary | REFINES |
+| 17. Swiggy FD take rate | ~25.8% | Analysts peg **~23%** (JM Q4 FY26), 22.8% (Motilal); 25.8% not confirmed | Business Standard | (same as #16) | May 2026 | Secondary | CONTRADICTS |
+| 18. FD orders/user/month | ~4.2 | Platform frequency **4.01** (Q4 FY26), 4.22 (Q4 FY25) — platform-wide, not food-only | Swiggy Q4 FY26 Shareholder Letter | (same as #2) | May 2026 | Primary | REFINES |
+| 19. FD AOV | ~₹480 | Not disclosed for Q4 FY26; no precise figure published | Swiggy filings | (same as #2) | May 2026 | — | NO DATA FOUND |
+| 20. Ad revenue Zepto | ₹1,636cr | ₹1,635.7cr FY26 (+151%); Q4 ₹543cr; 2,468 brand partners; ~7.8% of NRV | Zepto UDRHP via Storyboard18 | https://www.storyboard18.com/amp/brand-marketing/zepto-ad-revenue-jumps-151-percent-in-fy26-ahead-of-ipo-debut-ws-l-100656.htm | 2026 | Primary(DRHP)/Secondary | CONFIRMS |
+| 20b. Ad revenue Blinkit | ~₹1,000cr+ | **Not disclosed** — Eternal does not break out Blinkit absolute ad revenue | Quash | https://quashbugs.com/blog/blinkit-surpasses-zomato-in-quick-commerce | 2026 | Secondary | NO DATA FOUND |
+| 21. QC breakeven density | ~1,552 | **Redseer ~1,200-1,250** (mature metros); PAN-India OPD/store ~1,255 (Jan-26), top-3 leaders ~1,350; older Bernstein ~800 | Redseer ("Dark Store Blind Spot") | https://redseer.com/articles/the-dark-store-blind-spot-the-part-of-quick-commerce-growth-that-the-topline-doesnt-show/ | 2026 | Secondary | CONTRADICTS |
+| 22. Store maturation | ~2 quarters | Blinkit 3-6 months; non-metro 6-12 months (Bernstein) | Ziro; Storyboard18 (Bernstein) | https://www.storyboard18.com/trending/dark-stores-explained-how-blinkit-zepto-are-building-dense-networks-for-quick-commerce-growth-95233.htm | 2026 | Secondary | CONFIRMS |
+| 23. New-store starting density | ~400/day | No precise disclosure; examples 150-500/day | Business Model Hub | https://businessmodelhub.in/dark-store-business-model/ | 2025-26 | Secondary | NO DATA FOUND |
+| 24. Instamart capacity ceiling | "2,000+" | "darkstores can operate at 2000+ orders (megapods at much higher levels)" | Swiggy Q2 FY26 Shareholder Letter | https://www.swiggy.com/corporate/wp-content/uploads/2025/10/Q2-FY2026-Shareholder-letter.pdf | Oct 2025 | Primary | CONFIRMS |
+| 25. Blinkit mature-market EBITDA | Gurgaon/Noida ~5% / Delhi NCR ~3.5% | Delhi NCR ~3.5%, Gurgaon & Noida ~5% (Q3 FY26); approaching 5-6% steady state | Quash (citing Eternal letters) | https://quashbugs.com/blog/blinkit-surpasses-zomato-in-quick-commerce | 2026 | Secondary | CONFIRMS |
+| 26. Flipkart Minutes | ~800 stores, +100/mo | ~800 stores Q1-26; +100/month; target 1,200-1,500 by 2026 end | Inc42; Lapaas (UBS) | https://inc42.com/buzz/amazon-to-expand-quick-commerce-service-to-100-cities-in-india/ | May 2026 | Secondary | CONFIRMS |
+| 27. Amazon Now | 100 cities / 1,000+ MFCs | 100 cities, >1,000 MFCs (from ~300), ₹2,800cr investment | Amazon statement via Inc42 | (same as #26) | Apr 2026 | Primary/Secondary | CONFIRMS |
+| 28. FY26 entrants | — | JioMart ~1.6M orders/day Q3 FY26 (+53% QoQ, claims CM-positive per CFO Dinesh Taluja), ~800 stores; BigBasket 5-7%; Amazon ~300-500 MFCs; ~6,000 dark stores nationally (Bernstein) | Inc42 (Reliance Q3 FY26 IP) | https://inc42.com/features/reliance-jiomart-quick-commerce-push-rattle-blinkit-zepto/ | 2026 | Primary/Secondary | REFINES |
+
+## Details
+
+**Group A — Market structure & player economics.** The 46/24/22 split is real and attributable: Datum Intelligence data (founder Satish Meena) cited by Reuters in January 2026. Meena's framing — "Blinkit and Instamart's market share is increasing because of new customer additions and existing quick commerce users shifting apps and increasing AOV" — and Datum's reading of Blinkit DAUs (6.2M vs Zepto's 4.9M by June 2025) underpin the estimate. Treat it as a credible secondary, not a disclosure, and flag the wide variance: BofA Research pegged Blinkit at >50%; Zepto's own UDRHP claims 29%. The single most damaging structural data point for Swiggy is Instamart's collapsing share of the top-3 order pool — **34.3% (FY24) → 24.5% (FY25) → 20.9% (FY26)** — sourced directly from Zepto's UDRHP. (Note Swiggy publicly called Zepto's competitive data "baseless and unreliable," so present it as Zepto-sourced.) All Q4 FY26 segment economics — Instamart GOV ₹7,881cr / NOV ₹5,675cr / CM -1.8%, and Blinkit NOV ₹14,386cr / +₹37cr adj EBITDA (0.3% of NOV, its first profitable scaled quarter) — are confirmed verbatim in the primary letters. **Correction flag:** the Instamart "orders/store/day = 1,025" current value is stale; that was Q2 FY26. The Q4 FY26 figure is **1,093** (the metric dipped from 1,190 in Q4 FY25 as the network expanded, then recovered).
+
+**Group B — Inventory-led model.** Blinkit at ~90% of NOV on own inventory (Q3 FY26) is confirmed. The "60 bps" margin benefit is **contradicted**: CFO Akshant Goyal said on the Q2 FY26 call that "the overall margin accretion of 1% [≈100 bps] will take some time because… you are signing contracts directly with brands," and separately that the shift "already boosted gross margins by about 300 basis points," with full benefit over "4-6 quarters." Crucially, **Swiggy has NOT moved Instamart to an inventory model** — its IOCC-enabling AoA resolution failed at **72.36%** (needed 75%) via postal ballot closing May 20, 2026 — so any "Swiggy CFO 50-70 bps inventory" attribution cannot be substantiated and should be dropped or relabeled as a Blinkit/Eternal figure. The **₹3.5cr/store capex is too high**: Blinkit's disclosed economics imply ~₹1cr capex per store (₹26cr annual NOV, ~40% ROCE), and Zomato filings show ₹370cr capex for 368 stores in H1 FY25 (~₹1cr/store). The ₹3.5cr figure likely conflates inventory working capital and multi-year lease commitments. Swiggy's ₹10,000cr QIP (₹4,475cr earmarked for QC fulfilment) is confirmed from regulatory filings.
+
+**Group C — Cross-sell economics.** The food→QC cross-sell conversion (8-25%) is **genuinely unsourced and should be modeled, not cited**. On the Q2 FY26 call, Swiggy management declined the food-vs-new-user split, saying "we won't be able to share specific numbers as these are sensitive." Eternal deliberately runs Zomato and Blinkit as separate apps ("super brands, not a super app," per Deepinder Goyal, Q4 FY26). The closest real datapoint is BofA's November 2025 survey: 20% of users use both food-delivery apps — but that is cross-app overlap *within food delivery*, NOT food-to-grocery cross-sell. (Avoid the Swiggy "13%" trap: that is monthly-active food users as a share of ever-transacted food users — reactivation, not cross-sell.) Instamart take rate ~19.2% aligns with JM Financial's 19.5% (on NOV). The Swiggy food-delivery take rate ~25.8% is **not confirmed** — analysts cluster around 23% (JM) / 22.8% (Motilal). Zepto's ad revenue ₹1,636cr is confirmed from its UDRHP; Blinkit's absolute ad revenue is **not disclosed** by Eternal (management says it is a higher % of NOV than food delivery, but gives no absolute number).
+
+**Group D — Density economics.** Instamart's "2,000+ orders/darkstore/day" capacity ceiling is confirmed verbatim in the Q2 FY26 letter. The ~1,552 breakeven density is **higher than analyst estimates**: Redseer's "Dark Store Blind Spot" note states only mature metros operate at/above the "1,200–1,250 breakeven range," with non-metros at ~850; Redseer's PAN-India OPD/store reads ~1,255 (Jan-26) and top-three leaders ~1,350. Store maturation ~2 quarters fits Blinkit's "3-6 months to mature density" (Bernstein: non-metro 6-12 months). New-store starting density (~400/day) has no precise public disclosure. Blinkit mature-market EBITDA (Delhi NCR ~3.5%, Gurgaon/Noida ~5%) is confirmed from Eternal's Q3 FY26 commentary.
+
+**Group E — Competitive dynamics.** Flipkart Minutes (~800 stores in Q1 2026, adding ~100/month, targeting 1,200-1,500 by year-end), Amazon Now (100 cities / 1,000+ MFCs from ~300 / ₹2,800cr investment), and JioMart (~1.6M orders/day in Q3 FY26, +53% QoQ, ~800 dark stores, with group CFO Dinesh Taluja claiming contribution-margin positivity on Reliance grocery-sourcing scale) are all corroborated. Bernstein counts >6,000 dark stores nationally, with 3,600 of the top 3,800 big-eight-city stores profitable but tier-2 stores still loss-making.
+
+## KEY CONTRADICTIONS TO ADDRESS
+
+1. **Inventory-model margin benefit (Item 11): 60 bps → ~100 bps.** Eternal CFO Akshant Goyal stated ~1 percentage point (≈100 bps) of EBITDA accretion, over half captured by Q3 FY26, plus ~300 bps of gross-margin lift. Additionally, the "Swiggy CFO 50-70 bps" attribution is unfounded — Swiggy has not transitioned to an inventory model (IOCC vote failed). Reassign this to Blinkit/Eternal.
+2. **Dark-store capex (Item 12): ₹3.5cr → ~₹1cr/store.** Blinkit's disclosed unit economics (₹26cr NOV/yr, ~40% ROCE) and Zomato's ₹370cr-for-368-stores filing both point to ~₹1cr/store. ₹3.5cr appears to conflate inventory working capital and lease costs.
+3. **QC breakeven density (Item 21): 1,552 → ~1,200-1,250.** Redseer's mature-metro breakeven band is 1,200-1,250; PAN-India running ~1,255. 1,552 overstates the threshold.
+4. **Instamart orders/store/day (Item 3): 1,025 → 1,093.** 1,025 was the Q2 FY26 figure; Q4 FY26 is 1,093 (primary source).
+5. **Swiggy food-delivery take rate (Item 17): 25.8% → ~23%.** No source confirms 25.8%; analysts (JM 23%, Motilal 22.8%) cluster lower. Swiggy does not disclose a clean food take-rate number.
+6. **Platform frequency (Item 18): 4.2 → 4.01.** Q4 FY26 platform frequency is 4.01 (and it is platform-wide, not food-only). 4.22 was the Q4 FY25 figure.
+
+## STILL GENUINELY UNSOURCED
+
+- **Food-delivery → quick-commerce cross-sell conversion (Item 15).** No public figure exists. Swiggy calls it "sensitive"; Eternal runs separate apps and discloses nothing. BofA's "20% use both food apps" is the nearest proxy but measures food cross-app overlap, not food→grocery. **Model this with explicit sensitivity bounds (8-25%); do not cite a source.**
+- **Blinkit absolute advertising revenue (Item 20b).** Eternal does not break out Blinkit's ad revenue in absolute terms. The "~₹1,000cr+" is an inference only. (Datum estimates total QC ad revenue ~₹4,300-6,000cr in CY2025 across all players.)
+- **Food-delivery AOV (Item 19, ~₹480).** Not disclosed in Swiggy's Q4 FY26 materials.
+- **New-store starting density (Item 23, ~400/day).** No company or analyst publishes a precise day-one volume; anecdotal range 150-500/day.
+
+## SUGGESTED ROWS FOR master_metrics.csv
+
+```csv
+row_id,company,segment,period,period_type,metric,value,unit,yoy_pct,qoq_pct,confidence,source_id,notes
+,Industry,quick_commerce,Jan2026,point,market_share_blinkit,46,percent,,,analyst_estimate,S26,Datum Intelligence cited by Reuters Jan2026; https://startupfeed.in/quick-commerce-war-2026-blinkit-zepto-instamart-amazon-flipkart/
+,Industry,quick_commerce,Jan2026,point,market_share_instamart,24,percent,,,analyst_estimate,S26,Datum Intelligence/Reuters; same URL
+,Industry,quick_commerce,Jan2026,point,market_share_zepto,22,percent,,,analyst_estimate,S26,Datum Intelligence/Reuters; same URL
+,Instamart,quick_commerce,Q4FY26,quarter,dark_stores,1143,count,,,disclosed,S27,Swiggy Q4FY26 letter; https://www.swiggy.com/corporate/wp-content/uploads/2026/05/Q4-FY2026-Shareholder-letter.pdf
+,Blinkit,quick_commerce,Q4FY26,quarter,dark_stores,2243,count,,,disclosed,S28,Eternal Q4FY26 letter; https://b.zmtcdn.com/investor-relations/Eternal_Limited_Shareholders_Letter_Q4FY26_Results.pdf
+,Zepto,quick_commerce,Q4FY26,quarter,dark_stores,1139,count,,,disclosed,S29,Zepto UDRHP; https://entrackr.com/fintrackr/zepto-doubles-revenue-in-fy26-losses-widen-to-rs-5905-cr-12016560
+,Instamart,quick_commerce,Q4FY26,quarter,orders_per_store_day,1093,orders,,,disclosed,S27,Swiggy Q4FY26 letter (1025 was Q2FY26); same URL as S27
+,Blinkit,quick_commerce,Q4FY26,quarter,orders_per_store_day,1425,orders,,,derived,S28,273.9M orders/~2135 avg stores/90d; Eternal letter
+,Zepto,quick_commerce,Q4FY26,quarter,orders_per_store_day,2045,orders,,,derived,S30,23.3 lakh/day div 1139 stores; https://inc42.com/features/zeptos-battle-beyond-speed/
+,Instamart,quick_commerce,Q4FY26,quarter,aov_gross,700,INR,32.8,,disclosed,S27,Gross AOV; net AOV ~485; same URL as S27
+,Blinkit,quick_commerce,Q4FY26,quarter,aov_net,525,INR,,,disclosed,S31,Net AOV; gross ~665-669; https://entrackr.com/analysis/eternals-reality-check-blinkits-thin-margins-and-districts-losses-11777148
+,Zepto,quick_commerce,Q4FY26,quarter,aov_implied,387,INR,,,derived,S30,Implied from NRV/orders; not in DRHP; same URL as S30
+,Instamart,quick_commerce,Q4FY26,quarter,mtu,13.3,million,,,disclosed,S27,Swiggy Q4FY26 letter
+,Blinkit,quick_commerce,Q4FY26,quarter,mtu,27.2,million,,,disclosed,S28,Eternal Q4FY26 letter
+,Swiggy,food_delivery,Q4FY26,quarter,mtu,18.3,million,21,,disclosed,S27,Swiggy Q4FY26 letter
+,Instamart,quick_commerce,FY26,annual,loss_per_order,85.18,INR,,,derived,S32,INDmoney from filings; https://www.indmoney.com/blog/stocks/zepto-blinkit-instamart-loss-per-order-profitability
+,Blinkit,quick_commerce,FY26,annual,loss_per_order,3.02,INR,,,derived,S32,INDmoney from filings; same URL
+,Zepto,quick_commerce,FY26,annual,loss_per_order,78.75,INR,,,disclosed,S33,Zepto UDRHP (was 136.15 FY25); https://www.angelone.in/news/ipos/zepto-ipo-comparing-zepto-with-blinkit-and-swiggy-instamart-on-orders-revenue-and-profitability
+,Instamart,quick_commerce,Q4FY26,quarter,gov,7881,INR_crore,68.8,,disclosed,S27,Swiggy Q4FY26 letter
+,Instamart,quick_commerce,Q4FY26,quarter,nov,5675,INR_crore,60.3,4,disclosed,S27,Swiggy Q4FY26 letter
+,Instamart,quick_commerce,Q4FY26,quarter,contribution_margin,-1.8,percent,,0.65,disclosed,S27,Swiggy Q4FY26 letter; Mar-26 monthly -1.1%
+,Blinkit,quick_commerce,Q4FY26,quarter,nov,14386,INR_crore,95.4,8.2,disclosed,S28,Eternal Q4FY26 letter
+,Blinkit,quick_commerce,Q4FY26,quarter,adj_ebitda,37,INR_crore,,,disclosed,S28,0.3% of NOV; Eternal Q4FY26 letter
+,Instamart,quick_commerce,FY24,annual,order_share_top3,34.3,percent,,,disclosed,S34,Zepto UDRHP; https://entrackr.com/analysis/instamarts-share-among-top-q-comm-players-drops-from-34-to-21-in-2-years-12018833
+,Instamart,quick_commerce,FY25,annual,order_share_top3,24.5,percent,,,disclosed,S34,Zepto UDRHP; same URL
+,Instamart,quick_commerce,FY26,annual,order_share_top3,20.9,percent,,,disclosed,S34,Zepto UDRHP; same URL
+,Blinkit,quick_commerce,Q3FY26,quarter,inventory_led_nov_share,90,percent,,,disclosed,S35,Eternal letter via Inc42; https://inc42.com/buzz/eternal-q3-blinkit-hyperpure-achieve-adjusted-ebitda-profitability/
+,Blinkit,quick_commerce,FY26,annual,inventory_ebitda_accretion,100,bps,,,disclosed,S36,CFO Goyal ~1ppt; +300bps gross margin; https://www.medianama.com/2025/10/223-blinkit-eternal-q2fy26-growth-zomato-food-delivery/
+,Blinkit,quick_commerce,FY26,annual,capex_per_store,1,INR_crore,,,analyst_estimate,S37,Implied 26cr NOV/yr ROCE~40%; https://shop.investyadnya.in/blogs/market-trends/blinkit-vs-d-mart-how-quick-commerce-is-disrupting-india-s-retail-empire
+,Swiggy,consolidated,FY26,annual,qip_raised,10000,INR_crore,,,disclosed,S38,Regulatory filing via MediaNama; https://www.medianama.com/2025/12/223-swiggy-half-10000-cr-qip-quick-commerce/
+,Swiggy,quick_commerce,FY26,annual,qip_instamart_earmark,4475,INR_crore,,,disclosed,S38,QC fulfilment earmark; same URL
+,Swiggy,consolidated,May2026,point,iocc_vote_favour,72.36,percent,,,disclosed,S39,Needed 75%; SEBI filing via Outlook; https://www.outlookbusiness.com/corporate/swiggy-misses-threshold-in-bid-to-become-indian-owned-company
+,Instamart,quick_commerce,Q4FY26,quarter,take_rate_nov,19.5,percent,,,analyst_estimate,S40,JM Financial est on NOV; https://www.business-standard.com/markets/news/swiggy-share-price-nse-bse-q4-results-profit-revenue-food-delivery-quick-commerce-nov-gov-gmv-nmv-instamart-126050500152_1.html
+,Swiggy,food_delivery,Q4FY26,quarter,take_rate_gov,23,percent,,,analyst_estimate,S40,JM Financial est (not 25.8%); same URL as S40
+,Swiggy,consolidated,Q4FY26,quarter,platform_frequency,4.01,orders_per_user,,,disclosed,S27,Platform-wide not food-only; Swiggy Q4FY26 letter
+,Zepto,quick_commerce,FY26,annual,advertising_revenue,1636,INR_crore,151,,disclosed,S41,Zepto UDRHP; Q4 543cr; https://www.storyboard18.com/amp/brand-marketing/zepto-ad-revenue-jumps-151-percent-in-fy26-ahead-of-ipo-debut-ws-l-100656.htm
+,Instamart,quick_commerce,Q2FY26,quarter,capacity_ceiling_per_store,2000,orders,,,disclosed,S42,Swiggy Q2FY26 letter; https://www.swiggy.com/corporate/wp-content/uploads/2025/10/Q2-FY2026-Shareholder-letter.pdf
+,Industry,quick_commerce,2026,point,breakeven_density,1225,orders_per_store_day,,,analyst_estimate,S43,Redseer 1200-1250 metro band; https://redseer.com/articles/the-dark-store-blind-spot-the-part-of-quick-commerce-growth-that-the-topline-doesnt-show/
+,Blinkit,quick_commerce,FY26,annual,store_maturation,4.5,months,,,analyst_estimate,S44,3-6 months Blinkit; non-metro 6-12mo; https://www.storyboard18.com/trending/dark-stores-explained-how-blinkit-zepto-are-building-dense-networks-for-quick-commerce-growth-95233.htm
+,Blinkit,quick_commerce,Q3FY26,quarter,mature_ebitda_delhi_ncr,3.5,percent,,,disclosed,S45,Eternal letters via Quash; https://quashbugs.com/blog/blinkit-surpasses-zomato-in-quick-commerce
+,Blinkit,quick_commerce,Q3FY26,quarter,mature_ebitda_gurgaon_noida,5,percent,,,disclosed,S45,Eternal letters via Quash; same URL
+,Flipkart_Minutes,quick_commerce,Q1CY26,quarter,dark_stores,800,count,,,analyst_estimate,S46,Adding ~100/mo; target 1200-1500; https://inc42.com/buzz/amazon-to-expand-quick-commerce-service-to-100-cities-in-india/
+,Amazon_Now,quick_commerce,Apr2026,point,mfc_target,1000,count,,,disclosed,S46,100 cities target; 2800cr investment; same URL as S46
+,JioMart,quick_commerce,Q3FY26,quarter,orders_per_day,1.6,million,,53,disclosed,S47,Reliance Q3FY26 IP; claims CM-positive; https://inc42.com/features/reliance-jiomart-quick-commerce-push-rattle-blinkit-zepto/
+,Instamart,quick_commerce,FY26,annual,cross_sell_conversion,,percent,,,analyst_estimate,S48,NO PUBLIC DATA - model 8-25%; BofA 20% use both food apps (not cross-sell); https://www.business-standard.com/industry/news/blinkit-tops-qcom-charts-swiggy-takes-lead-in-food-delivery-bofa-survey-125112501035_1.html
+,Blinkit,quick_commerce,FY26,annual,advertising_revenue,,INR_crore,,,analyst_estimate,S49,NO PUBLIC DATA - Eternal does not break out; https://quashbugs.com/blog/blinkit-surpasses-zomato-in-quick-commerce
+```
+
+## Caveats
+- Several secondary blogs (Quash, Ziro, INDmoney, Whalesbook) restate primary shareholder-letter figures; where a primary PDF exists (Swiggy/Eternal letters, Zepto UDRHP), it should be the citation of record rather than the blog.
+- Per-order loss figures (Instamart ₹85.18, Blinkit ₹3.02) are **derived by INDmoney from filings**, not company-stated; Zepto's ₹78.75 is DRHP-disclosed.
+- Market-share percentages are analyst estimates (Datum, BofA, Bernstein) — no player publishes audited share data, and sources diverge by up to ~6 pts on Blinkit (46% Datum vs >50% BofA).
+- Metric definitions differ across players and **must not be mixed**: Instamart reports GOV/NOV, Blinkit reports NOV, Zepto reports NRV (which includes user fees, subscription and ad revenue). Instamart AOV ₹700 is gross (net ~₹485); Blinkit ₹525 is net; Zepto ₹387 is implied/not disclosed.
+- One Bernstein note was accessed via a Scribd-hosted copy; treat the specific throughput estimates (~2,200-2,300 orders/store potential) as analyst projections, not realized figures.
+- Forward-looking targets (Blinkit 3,000 stores by Mar-27, Instamart >₹1 lakh cr NOV with 4-5% EBITDA medium-term, Amazon/Flipkart store targets) are management/analyst **guidance**, not achieved results.
